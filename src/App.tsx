@@ -5,13 +5,14 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import Dashboard from "./pages/Dashboard";
-import Devices from "./pages/Devices";
-import Network from "./pages/Network";
-import GPRS from "./pages/GPRS";
-import NAT from "./pages/NAT";
-import DMZ from "./pages/DMZ";
-import Security from "./pages/Security";
 import System from "./pages/System";
+import Network from "./pages/Network";
+import Wireless from "./pages/Wireless";
+import DHCP from "./pages/DHCP";
+import Firewall from "./pages/Firewall";
+import SystemConfig from "./pages/SystemConfig";
+import Backup from "./pages/Backup";
+import Software from "./pages/Software";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,13 +26,14 @@ const App = () => (
         <Layout>
           <Routes>
             <Route path="/" element={<Dashboard />} />
-            <Route path="/devices" element={<Devices />} />
-            <Route path="/network" element={<Network />} />
-            <Route path="/gprs" element={<GPRS />} />
-            <Route path="/nat" element={<NAT />} />
-            <Route path="/dmz" element={<DMZ />} />
-            <Route path="/security" element={<Security />} />
             <Route path="/system" element={<System />} />
+            <Route path="/network" element={<Network />} />
+            <Route path="/wireless" element={<Wireless />} />
+            <Route path="/dhcp" element={<DHCP />} />
+            <Route path="/firewall" element={<Firewall />} />
+            <Route path="/system-config" element={<SystemConfig />} />
+            <Route path="/backup" element={<Backup />} />
+            <Route path="/software" element={<Software />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
