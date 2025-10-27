@@ -1,9 +1,11 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { PendingInput } from "@/components/PendingInput";
+import { PendingSwitch } from "@/components/PendingSwitch";
+import { PendingSelect, SelectContent, SelectItem } from "@/components/PendingSelect";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -116,10 +118,12 @@ export default function Network() {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="wan-type">連接類型</Label>
-                  <Select defaultValue="dhcp">
-                    <SelectTrigger id="wan-type">
-                      <SelectValue />
-                    </SelectTrigger>
+                  <PendingSelect 
+                    section="WAN 設定" 
+                    field="連接類型" 
+                    defaultValue="dhcp"
+                    id="wan-type"
+                  >
                     <SelectContent>
                       <SelectItem value="dhcp">DHCP 自動獲取</SelectItem>
                       <SelectItem value="static">靜態 IP</SelectItem>
@@ -127,21 +131,23 @@ export default function Network() {
                       <SelectItem value="pptp">PPTP</SelectItem>
                       <SelectItem value="l2tp">L2TP</SelectItem>
                     </SelectContent>
-                  </Select>
+                  </PendingSelect>
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="wan-port">實體埠</Label>
-                  <Select defaultValue="eth0">
-                    <SelectTrigger id="wan-port">
-                      <SelectValue />
-                    </SelectTrigger>
+                  <PendingSelect 
+                    section="WAN 設定" 
+                    field="實體埠" 
+                    defaultValue="eth0"
+                    id="wan-port"
+                  >
                     <SelectContent>
                       <SelectItem value="eth0">eth0 (WAN)</SelectItem>
                       <SelectItem value="eth1">eth1</SelectItem>
                       <SelectItem value="eth2">eth2</SelectItem>
                     </SelectContent>
-                  </Select>
+                  </PendingSelect>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -168,7 +174,13 @@ export default function Network() {
 
                 <div className="space-y-2">
                   <Label htmlFor="wan-mtu">MTU 大小</Label>
-                  <Input id="wan-mtu" type="number" defaultValue="1500" />
+                  <PendingInput 
+                    section="WAN 設定" 
+                    field="MTU 大小" 
+                    id="wan-mtu" 
+                    type="number" 
+                    defaultValue="1500" 
+                  />
                   <p className="text-xs text-muted-foreground">
                     建議值：1500（Ethernet）、1492（PPPoE）
                   </p>
@@ -179,7 +191,11 @@ export default function Network() {
                     <Label htmlFor="wan-clone-mac">克隆 MAC 地址</Label>
                     <p className="text-sm text-muted-foreground">使用自定義 MAC 地址</p>
                   </div>
-                  <Switch id="wan-clone-mac" />
+                  <PendingSwitch 
+                    section="WAN 設定" 
+                    field="克隆 MAC 地址" 
+                    id="wan-clone-mac" 
+                  />
                 </div>
 
                 <div className="space-y-2">
@@ -240,7 +256,12 @@ export default function Network() {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="lan-ip">LAN IP 地址</Label>
-                  <Input id="lan-ip" defaultValue="192.168.1.1" />
+                  <PendingInput 
+                    section="LAN 設定" 
+                    field="LAN IP 地址" 
+                    id="lan-ip" 
+                    defaultValue="192.168.1.1" 
+                  />
                   <p className="text-xs text-muted-foreground">
                     路由器在區域網中的 IP 地址
                   </p>
@@ -248,35 +269,57 @@ export default function Network() {
 
                 <div className="space-y-2">
                   <Label htmlFor="lan-mask">子網掩碼</Label>
-                  <Select defaultValue="255.255.255.0">
-                    <SelectTrigger id="lan-mask">
-                      <SelectValue />
-                    </SelectTrigger>
+                  <PendingSelect 
+                    section="LAN 設定" 
+                    field="子網掩碼" 
+                    defaultValue="255.255.255.0"
+                    id="lan-mask"
+                  >
                     <SelectContent>
                       <SelectItem value="255.255.255.0">255.255.255.0 (/24)</SelectItem>
                       <SelectItem value="255.255.0.0">255.255.0.0 (/16)</SelectItem>
                       <SelectItem value="255.0.0.0">255.0.0.0 (/8)</SelectItem>
                     </SelectContent>
-                  </Select>
+                  </PendingSelect>
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="lan-ports">LAN 埠配置</Label>
                   <div className="grid grid-cols-2 gap-2">
                     <div className="flex items-center gap-2">
-                      <Switch id="lan1" defaultChecked />
+                      <PendingSwitch 
+                        section="LAN 設定" 
+                        field="LAN1 啟用" 
+                        id="lan1" 
+                        defaultChecked 
+                      />
                       <Label htmlFor="lan1" className="cursor-pointer">LAN1</Label>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Switch id="lan2" defaultChecked />
+                      <PendingSwitch 
+                        section="LAN 設定" 
+                        field="LAN2 啟用" 
+                        id="lan2" 
+                        defaultChecked 
+                      />
                       <Label htmlFor="lan2" className="cursor-pointer">LAN2</Label>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Switch id="lan3" defaultChecked />
+                      <PendingSwitch 
+                        section="LAN 設定" 
+                        field="LAN3 啟用" 
+                        id="lan3" 
+                        defaultChecked 
+                      />
                       <Label htmlFor="lan3" className="cursor-pointer">LAN3</Label>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Switch id="lan4" defaultChecked />
+                      <PendingSwitch 
+                        section="LAN 設定" 
+                        field="LAN4 啟用" 
+                        id="lan4" 
+                        defaultChecked 
+                      />
                       <Label htmlFor="lan4" className="cursor-pointer">LAN4</Label>
                     </div>
                   </div>
@@ -290,7 +333,11 @@ export default function Network() {
                     <Label htmlFor="lan-jumbo">啟用 Jumbo Frame</Label>
                     <p className="text-sm text-muted-foreground">支持大型數據包傳輸</p>
                   </div>
-                  <Switch id="lan-jumbo" />
+                  <PendingSwitch 
+                    section="LAN 設定" 
+                    field="Jumbo Frame" 
+                    id="lan-jumbo" 
+                  />
                 </div>
 
                 <div className="flex items-center justify-between">
@@ -298,7 +345,12 @@ export default function Network() {
                     <Label htmlFor="lan-igmp">啟用 IGMP Snooping</Label>
                     <p className="text-sm text-muted-foreground">優化多播流量</p>
                   </div>
-                  <Switch id="lan-igmp" defaultChecked />
+                  <PendingSwitch 
+                    section="LAN 設定" 
+                    field="IGMP Snooping" 
+                    id="lan-igmp" 
+                    defaultChecked 
+                  />
                 </div>
               </div>
 
@@ -328,121 +380,145 @@ export default function Network() {
                   <TableRow>
                     <TableCell className="font-medium">LAN1</TableCell>
                     <TableCell>
-                      <Select defaultValue="auto">
-                        <SelectTrigger className="w-32">
-                          <SelectValue />
-                        </SelectTrigger>
+                      <PendingSelect 
+                        section="埠速度設定" 
+                        field="LAN1 速度" 
+                        defaultValue="auto"
+                      >
                         <SelectContent>
                           <SelectItem value="auto">自動</SelectItem>
                           <SelectItem value="1000">1000M</SelectItem>
                           <SelectItem value="100">100M</SelectItem>
                           <SelectItem value="10">10M</SelectItem>
                         </SelectContent>
-                      </Select>
+                      </PendingSelect>
                     </TableCell>
                     <TableCell>
-                      <Select defaultValue="full">
-                        <SelectTrigger className="w-24">
-                          <SelectValue />
-                        </SelectTrigger>
+                      <PendingSelect 
+                        section="埠速度設定" 
+                        field="LAN1 雙工" 
+                        defaultValue="full"
+                      >
                         <SelectContent>
                           <SelectItem value="full">全雙工</SelectItem>
                           <SelectItem value="half">半雙工</SelectItem>
                         </SelectContent>
-                      </Select>
+                      </PendingSelect>
                     </TableCell>
                     <TableCell>
-                      <Switch defaultChecked />
+                      <PendingSwitch 
+                        section="埠速度設定" 
+                        field="LAN1 流量控制" 
+                        defaultChecked 
+                      />
                     </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell className="font-medium">LAN2</TableCell>
                     <TableCell>
-                      <Select defaultValue="auto">
-                        <SelectTrigger className="w-32">
-                          <SelectValue />
-                        </SelectTrigger>
+                      <PendingSelect 
+                        section="埠速度設定" 
+                        field="LAN2 速度" 
+                        defaultValue="auto"
+                      >
                         <SelectContent>
                           <SelectItem value="auto">自動</SelectItem>
                           <SelectItem value="1000">1000M</SelectItem>
                           <SelectItem value="100">100M</SelectItem>
                           <SelectItem value="10">10M</SelectItem>
                         </SelectContent>
-                      </Select>
+                      </PendingSelect>
                     </TableCell>
                     <TableCell>
-                      <Select defaultValue="full">
-                        <SelectTrigger className="w-24">
-                          <SelectValue />
-                        </SelectTrigger>
+                      <PendingSelect 
+                        section="埠速度設定" 
+                        field="LAN2 雙工" 
+                        defaultValue="full"
+                      >
                         <SelectContent>
                           <SelectItem value="full">全雙工</SelectItem>
                           <SelectItem value="half">半雙工</SelectItem>
                         </SelectContent>
-                      </Select>
+                      </PendingSelect>
                     </TableCell>
                     <TableCell>
-                      <Switch defaultChecked />
+                      <PendingSwitch 
+                        section="埠速度設定" 
+                        field="LAN2 流量控制" 
+                        defaultChecked 
+                      />
                     </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell className="font-medium">LAN3</TableCell>
                     <TableCell>
-                      <Select defaultValue="auto">
-                        <SelectTrigger className="w-32">
-                          <SelectValue />
-                        </SelectTrigger>
+                      <PendingSelect 
+                        section="埠速度設定" 
+                        field="LAN3 速度" 
+                        defaultValue="auto"
+                      >
                         <SelectContent>
                           <SelectItem value="auto">自動</SelectItem>
                           <SelectItem value="1000">1000M</SelectItem>
                           <SelectItem value="100">100M</SelectItem>
                           <SelectItem value="10">10M</SelectItem>
                         </SelectContent>
-                      </Select>
+                      </PendingSelect>
                     </TableCell>
                     <TableCell>
-                      <Select defaultValue="full">
-                        <SelectTrigger className="w-24">
-                          <SelectValue />
-                        </SelectTrigger>
+                      <PendingSelect 
+                        section="埠速度設定" 
+                        field="LAN3 雙工" 
+                        defaultValue="full"
+                      >
                         <SelectContent>
                           <SelectItem value="full">全雙工</SelectItem>
                           <SelectItem value="half">半雙工</SelectItem>
                         </SelectContent>
-                      </Select>
+                      </PendingSelect>
                     </TableCell>
                     <TableCell>
-                      <Switch defaultChecked />
+                      <PendingSwitch 
+                        section="埠速度設定" 
+                        field="LAN3 流量控制" 
+                        defaultChecked 
+                      />
                     </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell className="font-medium">LAN4</TableCell>
                     <TableCell>
-                      <Select defaultValue="auto">
-                        <SelectTrigger className="w-32">
-                          <SelectValue />
-                        </SelectTrigger>
+                      <PendingSelect 
+                        section="埠速度設定" 
+                        field="LAN4 速度" 
+                        defaultValue="auto"
+                      >
                         <SelectContent>
                           <SelectItem value="auto">自動</SelectItem>
                           <SelectItem value="1000">1000M</SelectItem>
                           <SelectItem value="100">100M</SelectItem>
                           <SelectItem value="10">10M</SelectItem>
                         </SelectContent>
-                      </Select>
+                      </PendingSelect>
                     </TableCell>
                     <TableCell>
-                      <Select defaultValue="full">
-                        <SelectTrigger className="w-24">
-                          <SelectValue />
-                        </SelectTrigger>
+                      <PendingSelect 
+                        section="埠速度設定" 
+                        field="LAN4 雙工" 
+                        defaultValue="full"
+                      >
                         <SelectContent>
                           <SelectItem value="full">全雙工</SelectItem>
                           <SelectItem value="half">半雙工</SelectItem>
                         </SelectContent>
-                      </Select>
+                      </PendingSelect>
                     </TableCell>
                     <TableCell>
-                      <Switch defaultChecked />
+                      <PendingSwitch 
+                        section="埠速度設定" 
+                        field="LAN4 流量控制" 
+                        defaultChecked 
+                      />
                     </TableCell>
                   </TableRow>
                 </TableBody>

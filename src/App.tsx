@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "./components/Layout";
+import { PendingChangesProvider } from "./contexts/PendingChangesContext";
 import Dashboard from "./pages/Dashboard";
 import System from "./pages/System";
 import Network from "./pages/Network";
@@ -22,10 +23,11 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Layout>
+      <PendingChangesProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Layout>
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/system" element={<System />} />
@@ -43,6 +45,7 @@ const App = () => (
           </Routes>
         </Layout>
       </BrowserRouter>
+      </PendingChangesProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
