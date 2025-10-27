@@ -11,6 +11,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import logo from "@/assets/logo.png";
 
 const items = [
   { title: "儀表板", url: "/", icon: Home },
@@ -31,10 +32,8 @@ export function AppSidebar() {
     <Sidebar collapsible="icon" className="border-sidebar-border">
       <SidebarContent className="bg-sidebar">
         <div className="p-6 border-b border-sidebar-border">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center">
-              <Wifi className="w-5 h-5 text-white" />
-            </div>
+          <div className="flex items-center gap-3">
+            <img src={logo} alt="DIGISEC" className="h-8" />
             {!isCollapsed && (
               <div>
                 <h2 className="text-lg font-bold text-sidebar-foreground">路由器</h2>
