@@ -50,10 +50,10 @@ export function Layout({ children }: LayoutProps) {
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen w-full bg-background">
+      <div className="flex min-h-screen w-full bg-white">
         <AppSidebar />
         <div className="flex-1 flex flex-col">
-          <header className="h-16 border-b border-border bg-card flex items-center px-6 shadow-sm">
+          <header className="h-16 border-b border-border bg-white flex items-center px-6 shadow-sm">
             <SidebarTrigger className="mr-4" />
             <div className="flex-1">
               <h1 className="text-xl font-semibold text-foreground">路由器管理系統</h1>

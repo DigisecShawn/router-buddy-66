@@ -28,24 +28,24 @@ export function AppSidebar() {
   const isCollapsed = state === "collapsed";
 
   return (
-    <Sidebar collapsible="icon" className="border-sidebar-border">
-      <SidebarContent className="bg-sidebar">
+    <Sidebar collapsible="icon" className="border-sidebar-border bg-white">
+      <SidebarContent className="bg-white">
         <div className="p-6 border-b border-sidebar-border">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-md">
               <Wifi className="w-5 h-5 text-white" />
             </div>
             {!isCollapsed && (
               <div>
-                <h2 className="text-lg font-bold text-sidebar-foreground">路由器</h2>
-                <p className="text-xs text-sidebar-foreground/60">管理中心</p>
+                <h2 className="text-lg font-bold text-foreground">路由器</h2>
+                <p className="text-xs text-muted-foreground">管理中心</p>
               </div>
             )}
           </div>
         </div>
 
         <SidebarGroup>
-          <SidebarGroupLabel className="text-sidebar-foreground/60">主選單</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-muted-foreground">主選單</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
@@ -57,8 +57,8 @@ export function AppSidebar() {
                       className={({ isActive }) =>
                         `flex items-center gap-3 px-3 py-2 rounded-lg transition-all ${
                           isActive
-                            ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
-                            : "text-sidebar-foreground hover:bg-sidebar-accent/50"
+                            ? "bg-primary text-white font-medium shadow-md"
+                            : "text-foreground hover:bg-muted"
                         }`
                       }
                     >
