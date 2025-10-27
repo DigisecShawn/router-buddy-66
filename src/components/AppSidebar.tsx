@@ -1,4 +1,4 @@
-import { Home, Wifi, Shield, Settings, Info } from "lucide-react";
+import { Home, Wifi, Shield, Settings, Info, Signal, Radio, Network, Server } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import {
   Sidebar,
@@ -16,6 +16,9 @@ const items = [
   { title: "儀表板", url: "/", icon: Home },
   { title: "設備管理", url: "/devices", icon: Wifi },
   { title: "網絡設置", url: "/network", icon: Settings },
+  { title: "GPRS設定", url: "/gprs", icon: Signal },
+  { title: "NAT設定", url: "/nat", icon: Network },
+  { title: "DMZ設定", url: "/dmz", icon: Server },
   { title: "安全設置", url: "/security", icon: Shield },
   { title: "系統信息", url: "/system", icon: Info },
 ];

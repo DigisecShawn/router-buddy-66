@@ -7,6 +7,9 @@ import { Layout } from "./components/Layout";
 import Dashboard from "./pages/Dashboard";
 import Devices from "./pages/Devices";
 import Network from "./pages/Network";
+import GPRS from "./pages/GPRS";
+import NAT from "./pages/NAT";
+import DMZ from "./pages/DMZ";
 import Security from "./pages/Security";
 import System from "./pages/System";
 import NotFound from "./pages/NotFound";
@@ -24,6 +27,9 @@ const App = () => (
             <Route path="/" element={<Dashboard />} />
             <Route path="/devices" element={<Devices />} />
             <Route path="/network" element={<Network />} />
+            <Route path="/gprs" element={<GPRS />} />
+            <Route path="/nat" element={<NAT />} />
+            <Route path="/dmz" element={<DMZ />} />
             <Route path="/security" element={<Security />} />
             <Route path="/system" element={<System />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
