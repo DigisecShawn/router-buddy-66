@@ -1,12 +1,36 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { PendingInput } from "@/components/PendingInput";
 import { PendingSwitch } from "@/components/PendingSwitch";
 import { PendingSelect, SelectContent, SelectItem } from "@/components/PendingSelect";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Globe, Network as NetworkIcon, Server } from "lucide-react";
+import { Globe, Network as NetworkIcon, Server, Monitor, Smartphone, Laptop, Tv, Wifi } from "lucide-react";
+
+const connectedDevices = [
+  { hostname: "iPhone-張三", mac: "A1:B2:C3:D4:E5:F6", ip: "192.168.1.101", type: "smartphone", leaseExpires: "11:32:45" },
+  { hostname: "MacBook-Pro", mac: "11:22:33:44:55:66", ip: "192.168.1.102", type: "laptop", leaseExpires: "10:15:22" },
+  { hostname: "Windows-PC", mac: "AA:BB:CC:DD:EE:FF", ip: "192.168.1.103", type: "desktop", leaseExpires: "09:45:10" },
+  { hostname: "Smart-TV", mac: "12:34:56:78:9A:BC", ip: "192.168.1.104", type: "tv", leaseExpires: "08:20:33" },
+  { hostname: "ESP32-IoT", mac: "DE:AD:BE:EF:00:01", ip: "192.168.1.105", type: "other", leaseExpires: "07:55:18" },
+];
+
+const getDeviceIcon = (type: string) => {
+  switch (type) {
+    case "smartphone":
+      return <Smartphone className="w-4 h-4" />;
+    case "laptop":
+      return <Laptop className="w-4 h-4" />;
+    case "desktop":
+      return <Monitor className="w-4 h-4" />;
+    case "tv":
+      return <Tv className="w-4 h-4" />;
+    default:
+      return <Wifi className="w-4 h-4" />;
+  }
+};
 
 export default function Network() {
   return (
@@ -257,6 +281,51 @@ export default function Network() {
                   </p>
                 </div>
               </div>
+            </CardContent>
+          </Card>
+
+          <Card className="mt-6">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Monitor className="w-5 h-5 text-primary" />
+                已連接設備
+              </CardTitle>
+              <CardDescription>目前透過 DHCP 取得 IP 的裝置（共 {connectedDevices.length} 台）</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>設備</TableHead>
+                    <TableHead>MAC 地址</TableHead>
+                    <TableHead>IP 地址</TableHead>
+                    <TableHead>租約到期</TableHead>
+                    <TableHead>操作</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {connectedDevices.map((device, index) => (
+                    <TableRow key={index}>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <div className="p-1.5 rounded bg-muted">
+                            {getDeviceIcon(device.type)}
+                          </div>
+                          <span className="font-medium">{device.hostname}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="font-mono text-sm">{device.mac}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline">{device.ip}</Badge>
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">{device.leaseExpires}</TableCell>
+                      <TableCell>
+                        <Button variant="ghost" size="sm">設為靜態</Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </CardContent>
           </Card>
 
