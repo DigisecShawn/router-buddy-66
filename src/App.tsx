@@ -11,7 +11,6 @@ import Network from "./pages/Network";
 import Wireless from "./pages/Wireless";
 import FourGRouting from "./pages/4GRouting";
 import GPRS from "./pages/GPRS";
-import DHCP from "./pages/DHCP";
 import Firewall from "./pages/Firewall";
 import SystemConfig from "./pages/SystemConfig";
 import SystemLogs from "./pages/SystemLogs";
@@ -36,7 +35,6 @@ const App = () => (
             <Route path="/wireless" element={<Wireless />} />
             <Route path="/4g-routing" element={<FourGRouting />} />
             <Route path="/gprs" element={<GPRS />} />
-            <Route path="/dhcp" element={<DHCP />} />
             <Route path="/firewall" element={<Firewall />} />
             <Route path="/system-config" element={<SystemConfig />} />
             <Route path="/system-logs" element={<SystemLogs />} />
