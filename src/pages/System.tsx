@@ -2,23 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Cpu, HardDrive, Thermometer, Zap, FileText } from "lucide-react";
+import { Cpu, HardDrive, Thermometer, Zap } from "lucide-react";
 
-const systemLogs = [
-  { time: "2024-01-15 14:32:15", level: "info", message: "系統啟動完成" },
-  { time: "2024-01-15 14:32:10", level: "info", message: "網路介面 eth0 已連接" },
-  { time: "2024-01-15 14:32:08", level: "info", message: "DHCP 服務已啟動" },
-  { time: "2024-01-15 14:32:05", level: "warning", message: "檢測到新的固件版本可用" },
-  { time: "2024-01-15 14:32:00", level: "info", message: "防火牆規則已載入" },
-  { time: "2024-01-15 14:31:55", level: "info", message: "無線網路 2.4GHz 已啟用" },
-  { time: "2024-01-15 14:31:50", level: "info", message: "無線網路 5GHz 已啟用" },
-  { time: "2024-01-15 14:31:45", level: "error", message: "NTP 同步失敗，將在 5 分鐘後重試" },
-  { time: "2024-01-15 14:31:40", level: "info", message: "USB 儲存裝置已掛載" },
-  { time: "2024-01-15 14:31:35", level: "info", message: "系統時間已同步" },
-  { time: "2024-01-15 14:31:30", level: "warning", message: "CPU 溫度略高 (45°C)" },
-  { time: "2024-01-15 14:31:25", level: "info", message: "記憶體使用率正常" },
-];
 const System = () => {
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
@@ -171,42 +156,6 @@ const System = () => {
               <Badge className="mt-2 bg-success text-white">已連接</Badge>
             </div>
           </div>
-        </CardContent>
-      </Card>
-
-      <Card className="shadow-elegant">
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <FileText className="w-5 h-5 text-primary" />
-            <CardTitle>系統紀錄</CardTitle>
-          </div>
-          <CardDescription>查看最近的系統事件和日誌</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ScrollArea className="h-[300px]">
-            <div className="space-y-2">
-              {systemLogs.map((log, index) => (
-                <div key={index} className="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/30 transition-colors">
-                  <span className="text-xs text-muted-foreground whitespace-nowrap font-mono">
-                    {log.time}
-                  </span>
-                  <Badge 
-                    variant="outline" 
-                    className={
-                      log.level === "error" 
-                        ? "border-destructive text-destructive" 
-                        : log.level === "warning" 
-                        ? "border-warning text-warning" 
-                        : "border-success text-success"
-                    }
-                  >
-                    {log.level === "error" ? "錯誤" : log.level === "warning" ? "警告" : "資訊"}
-                  </Badge>
-                  <span className="text-sm text-foreground">{log.message}</span>
-                </div>
-              ))}
-            </div>
-          </ScrollArea>
         </CardContent>
       </Card>
     </div>

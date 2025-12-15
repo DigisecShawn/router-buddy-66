@@ -1,4 +1,4 @@
-import { Home, Wifi, Shield, Settings, Info, Globe, Lock, HardDrive, Activity, Signal, Smartphone } from "lucide-react";
+import { Home, Wifi, Shield, Settings, Info, Globe, HardDrive, Activity, Signal, Smartphone, FileText } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import {
   Sidebar,
@@ -29,6 +29,7 @@ const networkItems = [
 
 const systemItems = [
   { title: "系統設定", url: "/system-config", icon: Settings },
+  { title: "系統紀錄", url: "/system-logs", icon: FileText },
   { title: "備份/還原", url: "/backup", icon: HardDrive },
   { title: "軟體管理", url: "/software", icon: Info },
 ];
