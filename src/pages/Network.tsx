@@ -7,30 +7,143 @@ import { PendingSwitch } from "@/components/PendingSwitch";
 import { PendingSelect, SelectContent, SelectItem } from "@/components/PendingSelect";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Globe, Network as NetworkIcon, Server, Monitor, Smartphone, Laptop, Tv, Wifi } from "lucide-react";
+import { Globe, Network as NetworkIcon, Server, Monitor, Smartphone, Laptop, Tv, Wifi, Tablet, Gamepad2, Printer, Camera, Speaker, Watch, Router, HardDrive } from "lucide-react";
 
-const connectedDevices = [
-  { hostname: "iPhone-張三", mac: "A1:B2:C3:D4:E5:F6", ip: "192.168.1.101", type: "smartphone", leaseExpires: "11:32:45" },
-  { hostname: "MacBook-Pro", mac: "11:22:33:44:55:66", ip: "192.168.1.102", type: "laptop", leaseExpires: "10:15:22" },
-  { hostname: "Windows-PC", mac: "AA:BB:CC:DD:EE:FF", ip: "192.168.1.103", type: "desktop", leaseExpires: "09:45:10" },
-  { hostname: "Smart-TV", mac: "12:34:56:78:9A:BC", ip: "192.168.1.104", type: "tv", leaseExpires: "08:20:33" },
-  { hostname: "ESP32-IoT", mac: "DE:AD:BE:EF:00:01", ip: "192.168.1.105", type: "other", leaseExpires: "07:55:18" },
+// MAC 地址前綴對應廠商/設備類型 (OUI)
+const macPrefixMap: Record<string, { vendor: string; type: string }> = {
+  "00:1A:2B": { vendor: "Apple", type: "smartphone" },
+  "A4:83:E7": { vendor: "Apple", type: "smartphone" },
+  "F0:18:98": { vendor: "Apple", type: "laptop" },
+  "3C:06:30": { vendor: "Apple", type: "laptop" },
+  "00:50:56": { vendor: "VMware", type: "desktop" },
+  "00:0C:29": { vendor: "VMware", type: "desktop" },
+  "B8:27:EB": { vendor: "Raspberry Pi", type: "iot" },
+  "DC:A6:32": { vendor: "Raspberry Pi", type: "iot" },
+  "30:AE:A4": { vendor: "Espressif", type: "iot" },
+  "24:0A:C4": { vendor: "Espressif", type: "iot" },
+  "AC:67:B2": { vendor: "Espressif", type: "iot" },
+  "00:1E:C2": { vendor: "Samsung", type: "smartphone" },
+  "78:47:1D": { vendor: "Samsung", type: "tv" },
+  "00:09:2D": { vendor: "Sony", type: "gaming" },
+  "00:04:1F": { vendor: "Sony", type: "gaming" },
+  "7C:BB:8A": { vendor: "Nintendo", type: "gaming" },
+  "00:1F:A7": { vendor: "Microsoft", type: "gaming" },
+  "00:1D:D8": { vendor: "Microsoft", type: "gaming" },
+  "00:17:88": { vendor: "Philips", type: "iot" },
+  "B4:E6:2D": { vendor: "Google", type: "speaker" },
+  "F4:F5:D8": { vendor: "Google", type: "speaker" },
+  "00:17:C4": { vendor: "HP", type: "printer" },
+  "3C:D9:2B": { vendor: "HP", type: "printer" },
+  "00:00:48": { vendor: "Epson", type: "printer" },
+};
+
+// 根據主機名稱關鍵字識別設備類型
+const hostnamePatterns: { pattern: RegExp; type: string }[] = [
+  { pattern: /iphone|android|galaxy|pixel|xiaomi|huawei|oppo|vivo|redmi|oneplus|realme/i, type: "smartphone" },
+  { pattern: /ipad|tab|tablet|surface/i, type: "tablet" },
+  { pattern: /macbook|laptop|notebook|thinkpad|dell|lenovo|asus|acer|hp-laptop/i, type: "laptop" },
+  { pattern: /imac|desktop|pc|workstation|tower/i, type: "desktop" },
+  { pattern: /smart-?tv|television|roku|fire-?tv|chromecast|appletv|lg-?tv|samsung-?tv|sony-?tv/i, type: "tv" },
+  { pattern: /playstation|ps[345]|xbox|nintendo|switch|gaming/i, type: "gaming" },
+  { pattern: /printer|epson|canon|brother|hp-print/i, type: "printer" },
+  { pattern: /camera|cam|ipcam|webcam|hikvision|dahua|reolink/i, type: "camera" },
+  { pattern: /echo|alexa|homepod|google-?home|nest|sonos|speaker/i, type: "speaker" },
+  { pattern: /watch|fitbit|garmin|amazfit/i, type: "watch" },
+  { pattern: /router|gateway|ap|access-?point|mesh/i, type: "router" },
+  { pattern: /nas|synology|qnap|storage|backup/i, type: "storage" },
+  { pattern: /esp32|esp8266|arduino|raspberry|pi|iot|sensor|smart-?plug|tuya|shelly/i, type: "iot" },
 ];
 
+// 自動識別設備類型
+const detectDeviceType = (hostname: string, mac: string): string => {
+  // 先根據 MAC 前綴識別
+  const macPrefix = mac.substring(0, 8).toUpperCase();
+  if (macPrefixMap[macPrefix]) {
+    return macPrefixMap[macPrefix].type;
+  }
+
+  // 再根據主機名稱識別
+  for (const { pattern, type } of hostnamePatterns) {
+    if (pattern.test(hostname)) {
+      return type;
+    }
+  }
+
+  return "unknown";
+};
+
+// 根據設備類型獲取圖示
 const getDeviceIcon = (type: string) => {
   switch (type) {
     case "smartphone":
       return <Smartphone className="w-4 h-4" />;
+    case "tablet":
+      return <Tablet className="w-4 h-4" />;
     case "laptop":
       return <Laptop className="w-4 h-4" />;
     case "desktop":
       return <Monitor className="w-4 h-4" />;
     case "tv":
       return <Tv className="w-4 h-4" />;
+    case "gaming":
+      return <Gamepad2 className="w-4 h-4" />;
+    case "printer":
+      return <Printer className="w-4 h-4" />;
+    case "camera":
+      return <Camera className="w-4 h-4" />;
+    case "speaker":
+      return <Speaker className="w-4 h-4" />;
+    case "watch":
+      return <Watch className="w-4 h-4" />;
+    case "router":
+      return <Router className="w-4 h-4" />;
+    case "storage":
+      return <HardDrive className="w-4 h-4" />;
+    case "iot":
+      return <Wifi className="w-4 h-4" />;
     default:
       return <Wifi className="w-4 h-4" />;
   }
 };
+
+// 獲取設備類型名稱
+const getDeviceTypeName = (type: string): string => {
+  const typeNames: Record<string, string> = {
+    smartphone: "手機",
+    tablet: "平板",
+    laptop: "筆電",
+    desktop: "桌機",
+    tv: "電視",
+    gaming: "遊戲機",
+    printer: "印表機",
+    camera: "攝影機",
+    speaker: "智慧音箱",
+    watch: "智慧手錶",
+    router: "路由器",
+    storage: "儲存設備",
+    iot: "IoT 裝置",
+    unknown: "未知設備",
+  };
+  return typeNames[type] || "未知設備";
+};
+
+// 模擬連接設備資料（現在不需要預設 type，會自動識別）
+const connectedDevicesRaw = [
+  { hostname: "iPhone-張三", mac: "A4:83:E7:D4:E5:F6", ip: "192.168.1.101", leaseExpires: "11:32:45" },
+  { hostname: "MacBook-Pro", mac: "F0:18:98:44:55:66", ip: "192.168.1.102", leaseExpires: "10:15:22" },
+  { hostname: "Windows-PC", mac: "AA:BB:CC:DD:EE:FF", ip: "192.168.1.103", leaseExpires: "09:45:10" },
+  { hostname: "Samsung-TV", mac: "78:47:1D:78:9A:BC", ip: "192.168.1.104", leaseExpires: "08:20:33" },
+  { hostname: "ESP32-Sensor", mac: "30:AE:A4:EF:00:01", ip: "192.168.1.105", leaseExpires: "07:55:18" },
+  { hostname: "PS5-Gaming", mac: "00:09:2D:12:34:56", ip: "192.168.1.106", leaseExpires: "06:30:00" },
+  { hostname: "HP-Printer", mac: "00:17:C4:AB:CD:EF", ip: "192.168.1.107", leaseExpires: "05:15:42" },
+  { hostname: "Google-Home", mac: "B4:E6:2D:11:22:33", ip: "192.168.1.108", leaseExpires: "04:45:10" },
+];
+
+// 自動識別每個設備的類型
+const connectedDevices = connectedDevicesRaw.map(device => ({
+  ...device,
+  type: detectDeviceType(device.hostname, device.mac),
+}));
 
 export default function Network() {
   return (
@@ -297,6 +410,7 @@ export default function Network() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>設備</TableHead>
+                    <TableHead>類型</TableHead>
                     <TableHead>MAC 地址</TableHead>
                     <TableHead>IP 地址</TableHead>
                     <TableHead>租約到期</TableHead>
@@ -313,6 +427,11 @@ export default function Network() {
                           </div>
                           <span className="font-medium">{device.hostname}</span>
                         </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="secondary" className="text-xs">
+                          {getDeviceTypeName(device.type)}
+                        </Badge>
                       </TableCell>
                       <TableCell className="font-mono text-sm">{device.mac}</TableCell>
                       <TableCell>
