@@ -14,6 +14,7 @@ import GPRS from "./pages/GPRS";
 import DHCP from "./pages/DHCP";
 import Firewall from "./pages/Firewall";
 import SystemConfig from "./pages/SystemConfig";
+import SystemLogs from "./pages/SystemLogs";
 import Backup from "./pages/Backup";
 import Software from "./pages/Software";
 import NotFound from "./pages/NotFound";
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/dhcp" element={<DHCP />} />
             <Route path="/firewall" element={<Firewall />} />
             <Route path="/system-config" element={<SystemConfig />} />
+            <Route path="/system-logs" element={<SystemLogs />} />
             <Route path="/backup" element={<Backup />} />
             <Route path="/software" element={<Software />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
