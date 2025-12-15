@@ -1,10 +1,12 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { PendingInput } from "@/components/PendingInput";
 import { PendingSwitch } from "@/components/PendingSwitch";
 import { PendingSelect, SelectContent, SelectItem } from "@/components/PendingSelect";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Globe, Network as NetworkIcon } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Globe, Network as NetworkIcon, Server } from "lucide-react";
 
 export default function Network() {
   return (
@@ -18,6 +20,7 @@ export default function Network() {
         <TabsList>
           <TabsTrigger value="wan">WAN 設定</TabsTrigger>
           <TabsTrigger value="lan">LAN 設定</TabsTrigger>
+          <TabsTrigger value="dns">DNS 設定</TabsTrigger>
         </TabsList>
 
         <TabsContent value="wan">
@@ -253,6 +256,81 @@ export default function Network() {
                     客戶端 IP 地址的有效時間
                   </p>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="mt-6">
+            <CardHeader>
+              <CardTitle>靜態租約</CardTitle>
+              <CardDescription>為特定設備分配固定 IP 地址</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>主機名稱</TableHead>
+                    <TableHead>MAC 地址</TableHead>
+                    <TableHead>IP 地址</TableHead>
+                    <TableHead>操作</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell className="text-muted-foreground text-center" colSpan={4}>
+                      尚無靜態租約
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+              <div className="mt-4">
+                <Button variant="outline">新增靜態租約</Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="dns">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Server className="w-5 h-5 text-primary" />
+                DNS 設定
+              </CardTitle>
+              <CardDescription>配置域名解析服務器</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="dns1">主要 DNS</Label>
+                <PendingInput 
+                  section="DNS 設定" 
+                  field="主要 DNS" 
+                  id="dns1" 
+                  defaultValue="8.8.8.8" 
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="dns2">備用 DNS</Label>
+                <PendingInput 
+                  section="DNS 設定" 
+                  field="備用 DNS" 
+                  id="dns2" 
+                  defaultValue="8.8.4.4" 
+                />
+              </div>
+
+              <div className="flex items-center justify-between pt-4 border-t">
+                <div>
+                  <Label htmlFor="dns-override">覆蓋 ISP DNS</Label>
+                  <p className="text-sm text-muted-foreground">使用自定義 DNS 替代 ISP 提供的</p>
+                </div>
+                <PendingSwitch 
+                  section="DNS 設定" 
+                  field="覆蓋 ISP DNS" 
+                  id="dns-override" 
+                  defaultChecked 
+                />
               </div>
             </CardContent>
           </Card>

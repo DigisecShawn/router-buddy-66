@@ -23,7 +23,6 @@ const networkItems = [
   { title: "無線網絡", url: "/wireless", icon: Wifi },
   { title: "4G 路由", url: "/4g-routing", icon: Smartphone },
   { title: "GPRS 設定", url: "/gprs", icon: Signal },
-  { title: "DHCP/DNS", url: "/dhcp", icon: Settings },
   { title: "防火牆", url: "/firewall", icon: Shield },
 ];
 
