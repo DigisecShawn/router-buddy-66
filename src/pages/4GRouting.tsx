@@ -91,10 +91,18 @@ export default function FourGRouting() {
 
             <div className="space-y-2">
               <Label htmlFor="pin-code">PIN 碼 (選填)</Label>
-              <Input id="pin-code" type="password" placeholder="1234" maxLength={4} />
+              <Input id="pin-code" type="password" placeholder="1234" maxLength={8} />
               <p className="text-xs text-muted-foreground">
                 如果 SIM 卡啟用了 PIN 碼保護，請輸入
               </p>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div>
+                <Label htmlFor="auto-pin-unlock">PIN 碼自動解鎖</Label>
+                <p className="text-sm text-muted-foreground">啟動時自動使用已儲存的 PIN 碼解鎖 SIM 卡</p>
+              </div>
+              <Switch id="auto-pin-unlock" />
             </div>
 
             <div className="space-y-2">
