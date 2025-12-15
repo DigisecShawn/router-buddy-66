@@ -85,18 +85,60 @@ export default function Wireless() {
           <CardTitle>5GHz 無線設置</CardTitle>
           <CardDescription>配置 5GHz 頻段無線網絡</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <Label htmlFor="wifi5-enabled">啟用 5GHz</Label>
-              <p className="text-sm text-muted-foreground">開啟 5GHz 頻段</p>
+        <CardContent className="space-y-6">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <Label htmlFor="wifi5-enabled">啟用 5GHz</Label>
+                <p className="text-sm text-muted-foreground">開啟 5GHz 頻段</p>
+              </div>
+              <Switch id="wifi5-enabled" />
             </div>
-            <Switch id="wifi5-enabled" />
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="ssid5">SSID (網絡名稱)</Label>
-            <Input id="ssid5" placeholder="OpenWrt_5G" />
+            <div className="space-y-2">
+              <Label htmlFor="ssid5">SSID (網絡名稱)</Label>
+              <Input id="ssid5" placeholder="OpenWrt_5G" />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="channel5">頻道</Label>
+              <Select defaultValue="auto">
+                <SelectTrigger id="channel5">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="auto">自動</SelectItem>
+                  <SelectItem value="36">36 (5180 MHz)</SelectItem>
+                  <SelectItem value="40">40 (5200 MHz)</SelectItem>
+                  <SelectItem value="44">44 (5220 MHz)</SelectItem>
+                  <SelectItem value="48">48 (5240 MHz)</SelectItem>
+                  <SelectItem value="149">149 (5745 MHz)</SelectItem>
+                  <SelectItem value="153">153 (5765 MHz)</SelectItem>
+                  <SelectItem value="157">157 (5785 MHz)</SelectItem>
+                  <SelectItem value="161">161 (5805 MHz)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="encryption5">加密方式</Label>
+              <Select defaultValue="wpa2">
+                <SelectTrigger id="encryption5">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">無加密</SelectItem>
+                  <SelectItem value="wpa2">WPA2-PSK</SelectItem>
+                  <SelectItem value="wpa3">WPA3-SAE</SelectItem>
+                  <SelectItem value="mixed">WPA2/WPA3 混合</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="password5">無線密碼</Label>
+              <Input id="password5" type="password" placeholder="至少 8 個字元" />
+            </div>
           </div>
 
           <div className="flex gap-2 pt-4">
