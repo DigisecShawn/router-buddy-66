@@ -1,4 +1,4 @@
-import { Home, Wifi, Shield, Settings, Info, Globe, HardDrive, Activity, Signal, Smartphone, FileText } from "lucide-react";
+import { Home, Wifi, Shield, Settings, Info, Globe, HardDrive, Activity, Smartphone, FileText } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import {
   Sidebar,
@@ -22,7 +22,6 @@ const networkItems = [
   { title: "介面", url: "/network", icon: Globe },
   { title: "無線網絡", url: "/wireless", icon: Wifi },
   { title: "4G 路由", url: "/4g-routing", icon: Smartphone },
-  { title: "GPRS 設定", url: "/gprs", icon: Signal },
   { title: "防火牆", url: "/firewall", icon: Shield },
 ];
 
