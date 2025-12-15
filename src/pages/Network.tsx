@@ -7,7 +7,9 @@ import { PendingSwitch } from "@/components/PendingSwitch";
 import { PendingSelect, SelectContent, SelectItem } from "@/components/PendingSelect";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Globe, Network as NetworkIcon, Server, Monitor, Smartphone, Laptop, Tv, Wifi, Tablet, Gamepad2, Printer, Camera, Speaker, Watch, Router, HardDrive } from "lucide-react";
+import { Globe, Network as NetworkIcon, Server, Monitor, Smartphone, Laptop, Tv, Wifi, Tablet, Gamepad2, Printer, Camera, Speaker, Watch, Router, HardDrive, Ban, ShieldX, ShieldCheck } from "lucide-react";
+import { toast } from "sonner";
+import { useState } from "react";
 
 // MAC 地址前綴對應廠商/設備類型 (OUI)
 const macPrefixMap: Record<string, { vendor: string; type: string }> = {
@@ -140,12 +142,39 @@ const connectedDevicesRaw = [
 ];
 
 // 自動識別每個設備的類型
-const connectedDevices = connectedDevicesRaw.map(device => ({
+const connectedDevicesData = connectedDevicesRaw.map(device => ({
   ...device,
   type: detectDeviceType(device.hostname, device.mac),
 }));
 
+// 已封鎖設備初始資料
+const blockedDevicesInitial = [
+  { hostname: "Unknown-Device", mac: "11:22:33:44:55:66", type: "unknown", blockedAt: "2024-01-10 14:30" },
+];
+
 export default function Network() {
+  const [blockedDevices, setBlockedDevices] = useState(blockedDevicesInitial);
+  const [connectedDevices, setConnectedDevices] = useState(connectedDevicesData);
+
+  const handleBlockDevice = (device: typeof connectedDevicesData[0]) => {
+    setBlockedDevices(prev => [...prev, {
+      hostname: device.hostname,
+      mac: device.mac,
+      type: device.type,
+      blockedAt: new Date().toLocaleString('zh-TW'),
+    }]);
+    setConnectedDevices(prev => prev.filter(d => d.mac !== device.mac));
+    toast.success(`已封鎖設備: ${device.hostname}`);
+  };
+
+  const handleUnblockDevice = (mac: string) => {
+    const device = blockedDevices.find(d => d.mac === mac);
+    setBlockedDevices(prev => prev.filter(d => d.mac !== mac));
+    if (device) {
+      toast.success(`已解除封鎖: ${device.hostname}`);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -439,10 +468,83 @@ export default function Network() {
                       </TableCell>
                       <TableCell className="text-muted-foreground">{device.leaseExpires}</TableCell>
                       <TableCell>
-                        <Button variant="ghost" size="sm">設為靜態</Button>
+                        <div className="flex gap-1">
+                          <Button variant="ghost" size="sm">設為靜態</Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="text-destructive hover:text-destructive"
+                            onClick={() => handleBlockDevice(device)}
+                          >
+                            <Ban className="w-4 h-4" />
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+
+          <Card className="mt-6">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <ShieldX className="w-5 h-5 text-destructive" />
+                已封鎖設備
+              </CardTitle>
+              <CardDescription>這些設備已被禁止連接網路</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>設備</TableHead>
+                    <TableHead>類型</TableHead>
+                    <TableHead>MAC 地址</TableHead>
+                    <TableHead>封鎖時間</TableHead>
+                    <TableHead>操作</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {blockedDevices.length === 0 ? (
+                    <TableRow>
+                      <TableCell className="text-muted-foreground text-center" colSpan={5}>
+                        尚無封鎖設備
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    blockedDevices.map((device, index) => (
+                      <TableRow key={index}>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <div className="p-1.5 rounded bg-destructive/10">
+                              {getDeviceIcon(device.type)}
+                            </div>
+                            <span className="font-medium text-muted-foreground line-through">{device.hostname}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="outline" className="text-xs border-destructive/50 text-destructive">
+                            {getDeviceTypeName(device.type)}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="font-mono text-sm">{device.mac}</TableCell>
+                        <TableCell className="text-muted-foreground text-sm">{device.blockedAt}</TableCell>
+                        <TableCell>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            className="text-success hover:text-success"
+                            onClick={() => handleUnblockDevice(device.mac)}
+                          >
+                            <ShieldCheck className="w-4 h-4 mr-1" />
+                            解除封鎖
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
                 </TableBody>
               </Table>
             </CardContent>
