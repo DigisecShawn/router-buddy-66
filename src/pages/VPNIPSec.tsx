@@ -6,8 +6,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Shield, Plus, Trash2, Play, Square, Edit } from "lucide-react";
+import { Shield, Plus, Trash2, Edit } from "lucide-react";
 import { useState } from "react";
+import { VPNStatusMonitor } from "@/components/VPNStatusMonitor";
 
 interface IPSecTunnel {
   id: string;
@@ -107,12 +108,38 @@ export default function VPNIPSec() {
     }
   };
 
+  const connectedTunnels = tunnels.filter(t => t.status === "connected");
+
+  const trafficStats = {
+    bytesIn: "2.4",
+    bytesOut: "1.8",
+    packetsIn: "2,345,678",
+    packetsOut: "1,876,543",
+  };
+
+  const connectionHistory = [
+    { id: "1", time: "2024-01-15 08:00:00", event: "connected" as const, details: "總部連線 通道已建立" },
+    { id: "2", time: "2024-01-14 22:30:00", event: "disconnected" as const, details: "分公司連線 通道斷開" },
+    { id: "3", time: "2024-01-14 09:15:00", event: "connected" as const, details: "分公司連線 通道已建立" },
+    { id: "4", time: "2024-01-13 18:00:00", event: "error" as const, details: "總部連線 IKE 協商失敗" },
+    { id: "5", time: "2024-01-13 17:45:00", event: "disconnected" as const, details: "總部連線 通道斷開" },
+  ];
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-foreground">VPN IPSec</h1>
         <p className="text-muted-foreground mt-2">管理 IPSec VPN 通道設定</p>
       </div>
+
+      {/* 連線狀態監控 */}
+      <VPNStatusMonitor
+        vpnType="IPSec"
+        isConnected={connectedTunnels.length > 0}
+        connectedSince={connectedTunnels.length > 0 ? `${connectedTunnels.length} 個通道已連線` : undefined}
+        traffic={trafficStats}
+        history={connectionHistory}
+      />
 
       <Card>
         <CardHeader>

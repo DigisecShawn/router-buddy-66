@@ -16,6 +16,7 @@ import SystemLogs from "./pages/SystemLogs";
 import Backup from "./pages/Backup";
 import VPNIPSec from "./pages/VPNIPSec";
 import VPNWireGuard from "./pages/VPNWireGuard";
+import VPNOpenVPN from "./pages/VPNOpenVPN";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,6 +41,7 @@ const App = () => (
             <Route path="/backup" element={<Backup />} />
             <Route path="/vpn-ipsec" element={<VPNIPSec />} />
             <Route path="/vpn-wireguard" element={<VPNWireGuard />} />
+            <Route path="/vpn-openvpn" element={<VPNOpenVPN />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

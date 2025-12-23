@@ -1,4 +1,4 @@
-import { Home, Wifi, Shield, Settings, Globe, HardDrive, Activity, Smartphone, FileText, Lock, KeyRound } from "lucide-react";
+import { Home, Wifi, Shield, Settings, Globe, HardDrive, Activity, Smartphone, FileText, Lock, KeyRound, Network } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import {
   Sidebar,
@@ -28,6 +28,7 @@ const networkItems = [
 const vpnItems = [
   { title: "IPSec VPN", url: "/vpn-ipsec", icon: Lock },
   { title: "WireGuard", url: "/vpn-wireguard", icon: KeyRound },
+  { title: "OpenVPN", url: "/vpn-openvpn", icon: Network },
 ];
 
 const systemItems = [
