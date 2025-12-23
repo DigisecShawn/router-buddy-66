@@ -3,12 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Shield, Plus, Trash2, Copy, Download, Edit, Key, RefreshCw } from "lucide-react";
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
+import { VPNStatusMonitor } from "@/components/VPNStatusMonitor";
 
 interface WireGuardPeer {
   id: string;
@@ -145,12 +145,38 @@ PersistentKeepalive = 25`;
     copyToClipboard(config, "用戶端設定");
   };
 
+  const connectedPeers = peers.filter(p => p.lastHandshake && p.enabled);
+
+  const trafficStats = {
+    bytesIn: "0.39",
+    bytesOut: "0.13",
+    packetsIn: "456,789",
+    packetsOut: "234,567",
+  };
+
+  const connectionHistory = [
+    { id: "1", time: "2024-01-15 10:00:00", event: "connected" as const, details: "行動裝置 握手成功" },
+    { id: "2", time: "2024-01-15 09:45:00", event: "connected" as const, details: "筆記型電腦 握手成功" },
+    { id: "3", time: "2024-01-14 20:00:00", event: "disconnected" as const, details: "遠端辦公室 連線逾時" },
+    { id: "4", time: "2024-01-14 15:30:00", event: "connected" as const, details: "遠端辦公室 握手成功" },
+    { id: "5", time: "2024-01-14 08:00:00", event: "error" as const, details: "無效的公鑰 - 握手失敗" },
+  ];
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-foreground">WireGuard VPN</h1>
         <p className="text-muted-foreground mt-2">管理 WireGuard VPN 設定和對等節點</p>
       </div>
+
+      {/* 連線狀態監控 */}
+      <VPNStatusMonitor
+        vpnType="WireGuard"
+        isConnected={connectedPeers.length > 0}
+        connectedSince={connectedPeers.length > 0 ? `${connectedPeers.length} 個對等節點已連線` : undefined}
+        traffic={trafficStats}
+        history={connectionHistory}
+      />
 
       <Card>
         <CardHeader>
