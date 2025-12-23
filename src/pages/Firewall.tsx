@@ -1,15 +1,18 @@
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ArrowRightLeft, Shield, Plus, Pencil, Trash2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { PendingInput } from "@/components/PendingInput";
+import { PendingSwitch } from "@/components/PendingSwitch";
+import { PendingSelect, SelectContent as PendingSelectContent, SelectItem as PendingSelectItem } from "@/components/PendingSelect";
 
 interface PortForwardRule {
   id: string;
@@ -129,31 +132,23 @@ export default function Firewall() {
               <Label htmlFor="dmz-enabled">啟用 DMZ</Label>
               <p className="text-sm text-muted-foreground">將指定 IP 設為 DMZ 主機</p>
             </div>
-            <Switch id="dmz-enabled" />
+            <PendingSwitch section="DMZ 設置" field="啟用 DMZ" id="dmz-enabled" />
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="dmz-ip">DMZ 主機 IP</Label>
-              <Input id="dmz-ip" placeholder="192.168.1.100" />
+              <PendingInput section="DMZ 設置" field="DMZ 主機 IP" id="dmz-ip" placeholder="192.168.1.100" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="dmz-interface">WAN 介面</Label>
-              <Select>
-                <SelectTrigger id="dmz-interface">
-                  <SelectValue placeholder="選擇介面" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="wan">WAN</SelectItem>
-                  <SelectItem value="wan6">WAN6</SelectItem>
-                </SelectContent>
-              </Select>
+              <PendingSelect section="DMZ 設置" field="WAN 介面" id="dmz-interface" defaultValue="wan">
+                <PendingSelectContent>
+                  <PendingSelectItem value="wan">WAN</PendingSelectItem>
+                  <PendingSelectItem value="wan6">WAN6</PendingSelectItem>
+                </PendingSelectContent>
+              </PendingSelect>
             </div>
-          </div>
-
-          <div className="flex gap-2 pt-4">
-            <Button>儲存設定</Button>
-            <Button variant="outline">重設</Button>
           </div>
         </CardContent>
       </Card>
@@ -338,12 +333,7 @@ export default function Firewall() {
               <Label htmlFor="nat-loopback">啟用 NAT 回環</Label>
               <p className="text-sm text-muted-foreground">允許 LAN 客戶端使用外部地址訪問端口轉發的服務</p>
             </div>
-            <Switch id="nat-loopback" defaultChecked />
-          </div>
-
-          <div className="flex gap-2 pt-4">
-            <Button>儲存設定</Button>
-            <Button variant="outline">重設</Button>
+            <PendingSwitch section="NAT 回環" field="啟用 NAT 回環" id="nat-loopback" defaultChecked />
           </div>
         </CardContent>
       </Card>
