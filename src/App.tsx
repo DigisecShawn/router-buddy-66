@@ -14,7 +14,8 @@ import Firewall from "./pages/Firewall";
 import SystemConfig from "./pages/SystemConfig";
 import SystemLogs from "./pages/SystemLogs";
 import Backup from "./pages/Backup";
-import Software from "./pages/Software";
+import VPNIPSec from "./pages/VPNIPSec";
+import VPNWireGuard from "./pages/VPNWireGuard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,7 +38,8 @@ const App = () => (
             <Route path="/system-config" element={<SystemConfig />} />
             <Route path="/system-logs" element={<SystemLogs />} />
             <Route path="/backup" element={<Backup />} />
-            <Route path="/software" element={<Software />} />
+            <Route path="/vpn-ipsec" element={<VPNIPSec />} />
+            <Route path="/vpn-wireguard" element={<VPNWireGuard />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
