@@ -9,10 +9,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ArrowRightLeft, Shield, Plus, Pencil, Trash2 } from "lucide-react";
-import { toast } from "@/hooks/use-toast";
 import { PendingInput } from "@/components/PendingInput";
 import { PendingSwitch } from "@/components/PendingSwitch";
 import { PendingSelect, SelectContent as PendingSelectContent, SelectItem as PendingSelectItem } from "@/components/PendingSelect";
+import { usePendingChanges } from "@/contexts/PendingChangesContext";
 
 interface PortForwardRule {
   id: string;
@@ -22,6 +22,13 @@ interface PortForwardRule {
   internalIp: string;
   internalPort: string;
   enabled: boolean;
+}
+
+// 用於追蹤待定的規則變更
+interface PendingRule {
+  action: "add" | "edit" | "delete" | "toggle";
+  rule: PortForwardRule;
+  originalRule?: PortForwardRule;
 }
 
 const initialFormState = {
@@ -34,10 +41,29 @@ const initialFormState = {
 };
 
 export default function Firewall() {
-  const [rules, setRules] = useState<PortForwardRule[]>([]);
+  const { addChange } = usePendingChanges();
+  const [committedRules, setCommittedRules] = useState<PortForwardRule[]>([]);
+  const [pendingRuleChanges, setPendingRuleChanges] = useState<PendingRule[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingRule, setEditingRule] = useState<PortForwardRule | null>(null);
   const [formData, setFormData] = useState(initialFormState);
+
+  // 計算顯示的規則（已提交 + 待定變更）
+  const displayRules = (() => {
+    let result = [...committedRules];
+    
+    pendingRuleChanges.forEach(pending => {
+      if (pending.action === "add") {
+        result.push({ ...pending.rule, id: `pending-${pending.rule.id}` });
+      } else if (pending.action === "delete") {
+        result = result.filter(r => r.id !== pending.rule.id);
+      } else if (pending.action === "edit" || pending.action === "toggle") {
+        result = result.map(r => r.id === pending.rule.id ? pending.rule : r);
+      }
+    });
+    
+    return result;
+  })();
 
   const handleOpenDialog = (rule?: PortForwardRule) => {
     if (rule) {
@@ -65,50 +91,112 @@ export default function Firewall() {
 
   const handleSubmit = () => {
     if (!formData.name || !formData.externalPort || !formData.internalIp || !formData.internalPort) {
-      toast({
-        title: "錯誤",
-        description: "請填寫所有必填欄位",
-        variant: "destructive",
-      });
       return;
     }
 
     if (editingRule) {
-      setRules(rules.map(r => 
-        r.id === editingRule.id 
-          ? { ...r, ...formData }
-          : r
-      ));
-      toast({
-        title: "成功",
-        description: "端口轉發規則已更新",
-      });
+      const updatedRule: PortForwardRule = {
+        ...editingRule,
+        ...formData,
+      };
+      
+      // 移除此規則的舊待定變更
+      setPendingRuleChanges(prev => prev.filter(p => p.rule.id !== editingRule.id));
+      
+      // 新增編輯待定變更
+      setPendingRuleChanges(prev => [...prev, {
+        action: "edit",
+        rule: updatedRule,
+        originalRule: editingRule,
+      }]);
+
+      addChange(
+        "端口轉發規則",
+        `編輯規則: ${formData.name}`,
+        `${editingRule.externalPort} → ${editingRule.internalIp}:${editingRule.internalPort}`,
+        `${formData.externalPort} → ${formData.internalIp}:${formData.internalPort}`
+      );
     } else {
       const newRule: PortForwardRule = {
         id: Date.now().toString(),
         ...formData,
       };
-      setRules([...rules, newRule]);
-      toast({
-        title: "成功",
-        description: "端口轉發規則已新增",
-      });
+      
+      setPendingRuleChanges(prev => [...prev, {
+        action: "add",
+        rule: newRule,
+      }]);
+
+      addChange(
+        "端口轉發規則",
+        `新增規則: ${formData.name}`,
+        "（無）",
+        `${formData.protocol.toUpperCase()} ${formData.externalPort} → ${formData.internalIp}:${formData.internalPort}`
+      );
     }
     handleCloseDialog();
   };
 
-  const handleDelete = (id: string) => {
-    setRules(rules.filter(r => r.id !== id));
-    toast({
-      title: "成功",
-      description: "端口轉發規則已刪除",
-    });
+  const handleDelete = (rule: PortForwardRule) => {
+    // 檢查是否是待定新增的規則
+    const isPendingAdd = pendingRuleChanges.some(p => p.action === "add" && `pending-${p.rule.id}` === rule.id);
+    
+    if (isPendingAdd) {
+      // 如果是待定新增的規則，直接從待定列表移除
+      setPendingRuleChanges(prev => prev.filter(p => !(p.action === "add" && `pending-${p.rule.id}` === rule.id)));
+    } else {
+      // 移除此規則的其他待定變更
+      setPendingRuleChanges(prev => prev.filter(p => p.rule.id !== rule.id));
+      
+      // 新增刪除待定變更
+      setPendingRuleChanges(prev => [...prev, {
+        action: "delete",
+        rule: rule,
+      }]);
+
+      addChange(
+        "端口轉發規則",
+        `刪除規則: ${rule.name}`,
+        `${rule.protocol.toUpperCase()} ${rule.externalPort} → ${rule.internalIp}:${rule.internalPort}`,
+        "（刪除）"
+      );
+    }
   };
 
-  const toggleRuleEnabled = (id: string) => {
-    setRules(rules.map(r => 
-      r.id === id ? { ...r, enabled: !r.enabled } : r
-    ));
+  const toggleRuleEnabled = (rule: PortForwardRule) => {
+    const newEnabled = !rule.enabled;
+    const updatedRule = { ...rule, enabled: newEnabled };
+    
+    // 移除此規則的舊待定變更（toggle類型）
+    setPendingRuleChanges(prev => prev.filter(p => !(p.rule.id === rule.id && p.action === "toggle")));
+    
+    // 檢查是否是待定新增或編輯的規則
+    const existingPending = pendingRuleChanges.find(p => p.rule.id === rule.id && (p.action === "add" || p.action === "edit"));
+    
+    if (existingPending) {
+      // 更新現有待定變更
+      setPendingRuleChanges(prev => prev.map(p => 
+        p.rule.id === rule.id ? { ...p, rule: updatedRule } : p
+      ));
+    } else {
+      setPendingRuleChanges(prev => [...prev, {
+        action: "toggle",
+        rule: updatedRule,
+        originalRule: rule,
+      }]);
+    }
+
+    addChange(
+      "端口轉發規則",
+      `${rule.name} 狀態`,
+      rule.enabled ? "啟用" : "停用",
+      newEnabled ? "啟用" : "停用"
+    );
+  };
+
+  // 檢查規則是否有待定變更
+  const isPending = (ruleId: string) => {
+    return pendingRuleChanges.some(p => p.rule.id === ruleId || `pending-${p.rule.id}` === ruleId);
   };
 
   return (
@@ -175,16 +263,23 @@ export default function Firewall() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {rules.length === 0 ? (
+              {displayRules.length === 0 ? (
                 <TableRow>
                   <TableCell className="text-muted-foreground text-center" colSpan={7}>
                     尚無轉發規則
                   </TableCell>
                 </TableRow>
               ) : (
-                rules.map((rule) => (
-                  <TableRow key={rule.id}>
-                    <TableCell className="font-medium">{rule.name}</TableCell>
+                displayRules.map((rule) => (
+                  <TableRow key={rule.id} className={isPending(rule.id) ? "bg-primary/5 border-l-2 border-l-primary" : ""}>
+                    <TableCell className="font-medium">
+                      {rule.name}
+                      {isPending(rule.id) && (
+                        <Badge variant="outline" className="ml-2 text-xs text-primary border-primary">
+                          待定
+                        </Badge>
+                      )}
+                    </TableCell>
                     <TableCell>
                       <Badge variant="outline">{rule.protocol.toUpperCase()}</Badge>
                     </TableCell>
@@ -194,7 +289,7 @@ export default function Firewall() {
                     <TableCell>
                       <Switch 
                         checked={rule.enabled} 
-                        onCheckedChange={() => toggleRuleEnabled(rule.id)}
+                        onCheckedChange={() => toggleRuleEnabled(rule)}
                       />
                     </TableCell>
                     <TableCell>
@@ -209,7 +304,7 @@ export default function Firewall() {
                         <Button 
                           variant="ghost" 
                           size="icon"
-                          onClick={() => handleDelete(rule.id)}
+                          onClick={() => handleDelete(rule)}
                         >
                           <Trash2 className="h-4 w-4 text-destructive" />
                         </Button>
