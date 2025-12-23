@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -6,9 +7,107 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowRightLeft, Shield } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { ArrowRightLeft, Shield, Plus, Pencil, Trash2 } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
+
+interface PortForwardRule {
+  id: string;
+  name: string;
+  protocol: string;
+  externalPort: string;
+  internalIp: string;
+  internalPort: string;
+  enabled: boolean;
+}
+
+const initialFormState = {
+  name: "",
+  protocol: "tcp",
+  externalPort: "",
+  internalIp: "",
+  internalPort: "",
+  enabled: true,
+};
 
 export default function Firewall() {
+  const [rules, setRules] = useState<PortForwardRule[]>([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingRule, setEditingRule] = useState<PortForwardRule | null>(null);
+  const [formData, setFormData] = useState(initialFormState);
+
+  const handleOpenDialog = (rule?: PortForwardRule) => {
+    if (rule) {
+      setEditingRule(rule);
+      setFormData({
+        name: rule.name,
+        protocol: rule.protocol,
+        externalPort: rule.externalPort,
+        internalIp: rule.internalIp,
+        internalPort: rule.internalPort,
+        enabled: rule.enabled,
+      });
+    } else {
+      setEditingRule(null);
+      setFormData(initialFormState);
+    }
+    setIsDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+    setEditingRule(null);
+    setFormData(initialFormState);
+  };
+
+  const handleSubmit = () => {
+    if (!formData.name || !formData.externalPort || !formData.internalIp || !formData.internalPort) {
+      toast({
+        title: "錯誤",
+        description: "請填寫所有必填欄位",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (editingRule) {
+      setRules(rules.map(r => 
+        r.id === editingRule.id 
+          ? { ...r, ...formData }
+          : r
+      ));
+      toast({
+        title: "成功",
+        description: "端口轉發規則已更新",
+      });
+    } else {
+      const newRule: PortForwardRule = {
+        id: Date.now().toString(),
+        ...formData,
+      };
+      setRules([...rules, newRule]);
+      toast({
+        title: "成功",
+        description: "端口轉發規則已新增",
+      });
+    }
+    handleCloseDialog();
+  };
+
+  const handleDelete = (id: string) => {
+    setRules(rules.filter(r => r.id !== id));
+    toast({
+      title: "成功",
+      description: "端口轉發規則已刪除",
+    });
+  };
+
+  const toggleRuleEnabled = (id: string) => {
+    setRules(rules.map(r => 
+      r.id === id ? { ...r, enabled: !r.enabled } : r
+    ));
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -81,15 +180,149 @@ export default function Firewall() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow>
-                <TableCell className="text-muted-foreground text-center" colSpan={7}>
-                  尚無轉發規則
-                </TableCell>
-              </TableRow>
+              {rules.length === 0 ? (
+                <TableRow>
+                  <TableCell className="text-muted-foreground text-center" colSpan={7}>
+                    尚無轉發規則
+                  </TableCell>
+                </TableRow>
+              ) : (
+                rules.map((rule) => (
+                  <TableRow key={rule.id}>
+                    <TableCell className="font-medium">{rule.name}</TableCell>
+                    <TableCell>
+                      <Badge variant="outline">{rule.protocol.toUpperCase()}</Badge>
+                    </TableCell>
+                    <TableCell>{rule.externalPort}</TableCell>
+                    <TableCell>{rule.internalIp}</TableCell>
+                    <TableCell>{rule.internalPort}</TableCell>
+                    <TableCell>
+                      <Switch 
+                        checked={rule.enabled} 
+                        onCheckedChange={() => toggleRuleEnabled(rule.id)}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-2">
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          onClick={() => handleOpenDialog(rule)}
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          onClick={() => handleDelete(rule.id)}
+                        >
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
           <div className="mt-4">
-            <Button variant="outline">新增規則</Button>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline" onClick={() => handleOpenDialog()}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  新增規則
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[500px]">
+                <DialogHeader>
+                  <DialogTitle>
+                    {editingRule ? "編輯端口轉發規則" : "新增端口轉發規則"}
+                  </DialogTitle>
+                  <DialogDescription>
+                    配置從外部端口到內部設備的網絡地址轉換規則
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="rule-name">規則名稱 *</Label>
+                    <Input
+                      id="rule-name"
+                      placeholder="例如: Web Server"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="rule-protocol">協議 *</Label>
+                    <Select 
+                      value={formData.protocol}
+                      onValueChange={(value) => setFormData({ ...formData, protocol: value })}
+                    >
+                      <SelectTrigger id="rule-protocol">
+                        <SelectValue placeholder="選擇協議" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="tcp">TCP</SelectItem>
+                        <SelectItem value="udp">UDP</SelectItem>
+                        <SelectItem value="tcp+udp">TCP + UDP</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="external-port">外部端口 *</Label>
+                      <Input
+                        id="external-port"
+                        placeholder="例如: 8080 或 8080-8090"
+                        value={formData.externalPort}
+                        onChange={(e) => setFormData({ ...formData, externalPort: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="internal-port">內部端口 *</Label>
+                      <Input
+                        id="internal-port"
+                        placeholder="例如: 80 或 80-90"
+                        value={formData.internalPort}
+                        onChange={(e) => setFormData({ ...formData, internalPort: e.target.value })}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="internal-ip">內部 IP 地址 *</Label>
+                    <Input
+                      id="internal-ip"
+                      placeholder="例如: 192.168.1.100"
+                      value={formData.internalIp}
+                      onChange={(e) => setFormData({ ...formData, internalIp: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between pt-2">
+                    <div>
+                      <Label htmlFor="rule-enabled">啟用規則</Label>
+                      <p className="text-sm text-muted-foreground">立即生效此轉發規則</p>
+                    </div>
+                    <Switch
+                      id="rule-enabled"
+                      checked={formData.enabled}
+                      onCheckedChange={(checked) => setFormData({ ...formData, enabled: checked })}
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={handleCloseDialog}>
+                    取消
+                  </Button>
+                  <Button onClick={handleSubmit}>
+                    {editingRule ? "更新" : "新增"}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
         </CardContent>
       </Card>
