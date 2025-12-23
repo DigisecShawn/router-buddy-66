@@ -9,6 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Shield, Plus, Trash2, Edit } from "lucide-react";
 import { useState } from "react";
 import { VPNStatusMonitor } from "@/components/VPNStatusMonitor";
+import { PendingInput } from "@/components/PendingInput";
+import { PendingSelect, SelectContent as PendingSelectContent, SelectItem as PendingSelectItem } from "@/components/PendingSelect";
 
 interface IPSecTunnel {
   id: string;
@@ -167,56 +169,58 @@ export default function VPNIPSec() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>通道名稱</Label>
-                    <Input 
+                    <PendingInput 
+                      section="IPSec 通道"
+                      field="通道名稱"
                       placeholder="例如：總部連線"
-                      value={newTunnel.name}
-                      onChange={(e) => setNewTunnel({...newTunnel, name: e.target.value})}
+                      defaultValue={newTunnel.name}
                     />
                   </div>
                   <div className="space-y-2">
                     <Label>遠端閘道 IP</Label>
-                    <Input 
+                    <PendingInput 
+                      section="IPSec 通道"
+                      field="遠端閘道 IP"
                       placeholder="例如：203.0.113.1"
-                      value={newTunnel.remoteGateway}
-                      onChange={(e) => setNewTunnel({...newTunnel, remoteGateway: e.target.value})}
+                      defaultValue={newTunnel.remoteGateway}
                     />
                   </div>
                   <div className="space-y-2">
                     <Label>本地子網路</Label>
-                    <Input 
+                    <PendingInput 
+                      section="IPSec 通道"
+                      field="本地子網路"
                       placeholder="例如：192.168.1.0/24"
-                      value={newTunnel.localSubnet}
-                      onChange={(e) => setNewTunnel({...newTunnel, localSubnet: e.target.value})}
+                      defaultValue={newTunnel.localSubnet}
                     />
                   </div>
                   <div className="space-y-2">
                     <Label>遠端子網路</Label>
-                    <Input 
+                    <PendingInput 
+                      section="IPSec 通道"
+                      field="遠端子網路"
                       placeholder="例如：10.0.0.0/24"
-                      value={newTunnel.remoteSubnet}
-                      onChange={(e) => setNewTunnel({...newTunnel, remoteSubnet: e.target.value})}
+                      defaultValue={newTunnel.remoteSubnet}
                     />
                   </div>
                   <div className="space-y-2">
                     <Label>預共用金鑰 (PSK)</Label>
-                    <Input 
+                    <PendingInput 
+                      section="IPSec 通道"
+                      field="預共用金鑰"
                       type="password"
                       placeholder="輸入預共用金鑰"
-                      value={newTunnel.psk}
-                      onChange={(e) => setNewTunnel({...newTunnel, psk: e.target.value})}
+                      defaultValue={newTunnel.psk}
                     />
                   </div>
                   <div className="space-y-2">
                     <Label>IKE 版本</Label>
-                    <Select value={newTunnel.ikeVersion} onValueChange={(v) => setNewTunnel({...newTunnel, ikeVersion: v})}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="ikev1">IKEv1</SelectItem>
-                        <SelectItem value="ikev2">IKEv2</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <PendingSelect section="IPSec 通道" field="IKE 版本" defaultValue={newTunnel.ikeVersion}>
+                      <PendingSelectContent>
+                        <PendingSelectItem value="ikev1">IKEv1</PendingSelectItem>
+                        <PendingSelectItem value="ikev2">IKEv2</PendingSelectItem>
+                      </PendingSelectContent>
+                    </PendingSelect>
                   </div>
                 </div>
 
@@ -225,44 +229,35 @@ export default function VPNIPSec() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2">
                       <Label>加密演算法</Label>
-                      <Select value={newTunnel.phase1Encryption} onValueChange={(v) => setNewTunnel({...newTunnel, phase1Encryption: v})}>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="aes128">AES-128</SelectItem>
-                          <SelectItem value="aes256">AES-256</SelectItem>
-                          <SelectItem value="3des">3DES</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <PendingSelect section="IPSec Phase 1" field="加密演算法" defaultValue={newTunnel.phase1Encryption}>
+                        <PendingSelectContent>
+                          <PendingSelectItem value="aes128">AES-128</PendingSelectItem>
+                          <PendingSelectItem value="aes256">AES-256</PendingSelectItem>
+                          <PendingSelectItem value="3des">3DES</PendingSelectItem>
+                        </PendingSelectContent>
+                      </PendingSelect>
                     </div>
                     <div className="space-y-2">
                       <Label>雜湊演算法</Label>
-                      <Select value={newTunnel.phase1Hash} onValueChange={(v) => setNewTunnel({...newTunnel, phase1Hash: v})}>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="sha1">SHA-1</SelectItem>
-                          <SelectItem value="sha256">SHA-256</SelectItem>
-                          <SelectItem value="sha512">SHA-512</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <PendingSelect section="IPSec Phase 1" field="雜湊演算法" defaultValue={newTunnel.phase1Hash}>
+                        <PendingSelectContent>
+                          <PendingSelectItem value="sha1">SHA-1</PendingSelectItem>
+                          <PendingSelectItem value="sha256">SHA-256</PendingSelectItem>
+                          <PendingSelectItem value="sha512">SHA-512</PendingSelectItem>
+                        </PendingSelectContent>
+                      </PendingSelect>
                     </div>
                     <div className="space-y-2">
                       <Label>DH 群組</Label>
-                      <Select value={newTunnel.phase1DH} onValueChange={(v) => setNewTunnel({...newTunnel, phase1DH: v})}>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="2">Group 2 (1024-bit)</SelectItem>
-                          <SelectItem value="5">Group 5 (1536-bit)</SelectItem>
-                          <SelectItem value="14">Group 14 (2048-bit)</SelectItem>
-                          <SelectItem value="19">Group 19 (256-bit ECP)</SelectItem>
-                          <SelectItem value="20">Group 20 (384-bit ECP)</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <PendingSelect section="IPSec Phase 1" field="DH 群組" defaultValue={newTunnel.phase1DH}>
+                        <PendingSelectContent>
+                          <PendingSelectItem value="2">Group 2 (1024-bit)</PendingSelectItem>
+                          <PendingSelectItem value="5">Group 5 (1536-bit)</PendingSelectItem>
+                          <PendingSelectItem value="14">Group 14 (2048-bit)</PendingSelectItem>
+                          <PendingSelectItem value="19">Group 19 (256-bit ECP)</PendingSelectItem>
+                          <PendingSelectItem value="20">Group 20 (384-bit ECP)</PendingSelectItem>
+                        </PendingSelectContent>
+                      </PendingSelect>
                     </div>
                   </div>
                 </div>
@@ -272,44 +267,35 @@ export default function VPNIPSec() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2">
                       <Label>加密演算法</Label>
-                      <Select value={newTunnel.phase2Encryption} onValueChange={(v) => setNewTunnel({...newTunnel, phase2Encryption: v})}>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="aes128">AES-128</SelectItem>
-                          <SelectItem value="aes256">AES-256</SelectItem>
-                          <SelectItem value="3des">3DES</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <PendingSelect section="IPSec Phase 2" field="加密演算法" defaultValue={newTunnel.phase2Encryption}>
+                        <PendingSelectContent>
+                          <PendingSelectItem value="aes128">AES-128</PendingSelectItem>
+                          <PendingSelectItem value="aes256">AES-256</PendingSelectItem>
+                          <PendingSelectItem value="3des">3DES</PendingSelectItem>
+                        </PendingSelectContent>
+                      </PendingSelect>
                     </div>
                     <div className="space-y-2">
                       <Label>雜湊演算法</Label>
-                      <Select value={newTunnel.phase2Hash} onValueChange={(v) => setNewTunnel({...newTunnel, phase2Hash: v})}>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="sha1">SHA-1</SelectItem>
-                          <SelectItem value="sha256">SHA-256</SelectItem>
-                          <SelectItem value="sha512">SHA-512</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <PendingSelect section="IPSec Phase 2" field="雜湊演算法" defaultValue={newTunnel.phase2Hash}>
+                        <PendingSelectContent>
+                          <PendingSelectItem value="sha1">SHA-1</PendingSelectItem>
+                          <PendingSelectItem value="sha256">SHA-256</PendingSelectItem>
+                          <PendingSelectItem value="sha512">SHA-512</PendingSelectItem>
+                        </PendingSelectContent>
+                      </PendingSelect>
                     </div>
                     <div className="space-y-2">
                       <Label>PFS 群組</Label>
-                      <Select value={newTunnel.phase2PFS} onValueChange={(v) => setNewTunnel({...newTunnel, phase2PFS: v})}>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="none">無</SelectItem>
-                          <SelectItem value="2">Group 2 (1024-bit)</SelectItem>
-                          <SelectItem value="5">Group 5 (1536-bit)</SelectItem>
-                          <SelectItem value="14">Group 14 (2048-bit)</SelectItem>
-                          <SelectItem value="19">Group 19 (256-bit ECP)</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <PendingSelect section="IPSec Phase 2" field="PFS 群組" defaultValue={newTunnel.phase2PFS}>
+                        <PendingSelectContent>
+                          <PendingSelectItem value="none">無</PendingSelectItem>
+                          <PendingSelectItem value="2">Group 2 (1024-bit)</PendingSelectItem>
+                          <PendingSelectItem value="5">Group 5 (1536-bit)</PendingSelectItem>
+                          <PendingSelectItem value="14">Group 14 (2048-bit)</PendingSelectItem>
+                          <PendingSelectItem value="19">Group 19 (256-bit ECP)</PendingSelectItem>
+                        </PendingSelectContent>
+                      </PendingSelect>
                     </div>
                   </div>
                 </div>

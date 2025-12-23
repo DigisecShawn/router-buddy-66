@@ -9,6 +9,8 @@ import { Shield, Plus, Trash2, Copy, Download, Edit, Key, RefreshCw } from "luci
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import { VPNStatusMonitor } from "@/components/VPNStatusMonitor";
+import { PendingInput } from "@/components/PendingInput";
+import { PendingSwitch } from "@/components/PendingSwitch";
 
 interface WireGuardPeer {
   id: string;
@@ -188,12 +190,13 @@ PersistentKeepalive = 25`;
               </CardTitle>
               <CardDescription>WireGuard 伺服器介面設定</CardDescription>
             </div>
-            <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2">
               <Label htmlFor="wg-enabled">啟用 WireGuard</Label>
-              <Switch 
+              <PendingSwitch 
+                section="WireGuard 設定" 
+                field="啟用 WireGuard" 
                 id="wg-enabled"
-                checked={wgInterface.enabled}
-                onCheckedChange={(checked) => setWgInterface({...wgInterface, enabled: checked})}
+                defaultChecked={wgInterface.enabled}
               />
             </div>
           </div>
@@ -202,17 +205,19 @@ PersistentKeepalive = 25`;
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>監聽埠</Label>
-              <Input 
+              <PendingInput 
+                section="WireGuard 設定" 
+                field="監聽埠"
                 type="number"
-                value={wgInterface.listenPort}
-                onChange={(e) => setWgInterface({...wgInterface, listenPort: parseInt(e.target.value)})}
+                defaultValue={wgInterface.listenPort.toString()}
               />
             </div>
             <div className="space-y-2">
               <Label>介面位址</Label>
-              <Input 
-                value={wgInterface.address}
-                onChange={(e) => setWgInterface({...wgInterface, address: e.target.value})}
+              <PendingInput 
+                section="WireGuard 設定" 
+                field="介面位址"
+                defaultValue={wgInterface.address}
                 placeholder="10.0.0.1/24"
               />
             </div>

@@ -11,6 +11,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Shield, Plus, Trash2, Edit, Upload, Download, Users, Server } from "lucide-react";
 import { useState } from "react";
 import { VPNStatusMonitor } from "@/components/VPNStatusMonitor";
+import { PendingInput } from "@/components/PendingInput";
+import { PendingSwitch } from "@/components/PendingSwitch";
+import { PendingSelect, SelectContent as PendingSelectContent, SelectItem as PendingSelectItem } from "@/components/PendingSelect";
 
 interface OpenVPNClient {
   id: string;
@@ -181,10 +184,11 @@ export default function VPNOpenVPN() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Label htmlFor="ovpn-enabled">啟用伺服器</Label>
-                  <Switch 
+                  <PendingSwitch 
+                    section="OpenVPN 伺服器" 
+                    field="啟用伺服器"
                     id="ovpn-enabled"
-                    checked={serverConfig.enabled}
-                    onCheckedChange={(checked) => setServerConfig({...serverConfig, enabled: checked})}
+                    defaultChecked={serverConfig.enabled}
                   />
                 </div>
               </div>
@@ -193,76 +197,71 @@ export default function VPNOpenVPN() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label>協定</Label>
-                  <Select value={serverConfig.protocol} onValueChange={(v) => setServerConfig({...serverConfig, protocol: v})}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="udp">UDP</SelectItem>
-                      <SelectItem value="tcp">TCP</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <PendingSelect section="OpenVPN 伺服器" field="協定" defaultValue={serverConfig.protocol}>
+                    <PendingSelectContent>
+                      <PendingSelectItem value="udp">UDP</PendingSelectItem>
+                      <PendingSelectItem value="tcp">TCP</PendingSelectItem>
+                    </PendingSelectContent>
+                  </PendingSelect>
                 </div>
                 <div className="space-y-2">
                   <Label>埠號</Label>
-                  <Input 
+                  <PendingInput 
+                    section="OpenVPN 伺服器" 
+                    field="埠號"
                     type="number"
-                    value={serverConfig.port}
-                    onChange={(e) => setServerConfig({...serverConfig, port: parseInt(e.target.value)})}
+                    defaultValue={serverConfig.port.toString()}
                   />
                 </div>
                 <div className="space-y-2">
                   <Label>裝置模式</Label>
-                  <Select value={serverConfig.deviceMode} onValueChange={(v) => setServerConfig({...serverConfig, deviceMode: v})}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="tun">TUN (路由模式)</SelectItem>
-                      <SelectItem value="tap">TAP (橋接模式)</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <PendingSelect section="OpenVPN 伺服器" field="裝置模式" defaultValue={serverConfig.deviceMode}>
+                    <PendingSelectContent>
+                      <PendingSelectItem value="tun">TUN (路由模式)</PendingSelectItem>
+                      <PendingSelectItem value="tap">TAP (橋接模式)</PendingSelectItem>
+                    </PendingSelectContent>
+                  </PendingSelect>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>伺服器網路</Label>
-                  <Input 
-                    value={serverConfig.serverNetwork}
-                    onChange={(e) => setServerConfig({...serverConfig, serverNetwork: e.target.value})}
+                  <PendingInput 
+                    section="OpenVPN 伺服器" 
+                    field="伺服器網路"
+                    defaultValue={serverConfig.serverNetwork}
                     placeholder="10.8.0.0/24"
                   />
                 </div>
                 <div className="space-y-2">
                   <Label>拓撲模式</Label>
-                  <Select value={serverConfig.topology} onValueChange={(v) => setServerConfig({...serverConfig, topology: v})}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="subnet">Subnet</SelectItem>
-                      <SelectItem value="net30">Net30</SelectItem>
-                      <SelectItem value="p2p">Point-to-Point</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <PendingSelect section="OpenVPN 伺服器" field="拓撲模式" defaultValue={serverConfig.topology}>
+                    <PendingSelectContent>
+                      <PendingSelectItem value="subnet">Subnet</PendingSelectItem>
+                      <PendingSelectItem value="net30">Net30</PendingSelectItem>
+                      <PendingSelectItem value="p2p">Point-to-Point</PendingSelectItem>
+                    </PendingSelectContent>
+                  </PendingSelect>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>推送路由</Label>
-                  <Input 
-                    value={serverConfig.pushRoutes}
-                    onChange={(e) => setServerConfig({...serverConfig, pushRoutes: e.target.value})}
+                  <PendingInput 
+                    section="OpenVPN 伺服器" 
+                    field="推送路由"
+                    defaultValue={serverConfig.pushRoutes}
                     placeholder="192.168.1.0/24"
                   />
                 </div>
                 <div className="space-y-2">
                   <Label>推送 DNS</Label>
-                  <Input 
-                    value={serverConfig.pushDNS}
-                    onChange={(e) => setServerConfig({...serverConfig, pushDNS: e.target.value})}
+                  <PendingInput 
+                    section="OpenVPN 伺服器" 
+                    field="推送 DNS"
+                    defaultValue={serverConfig.pushDNS}
                     placeholder="8.8.8.8"
                   />
                 </div>
@@ -273,50 +272,42 @@ export default function VPNOpenVPN() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <Label>加密演算法</Label>
-                    <Select value={serverConfig.cipher} onValueChange={(v) => setServerConfig({...serverConfig, cipher: v})}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="AES-256-GCM">AES-256-GCM</SelectItem>
-                        <SelectItem value="AES-128-GCM">AES-128-GCM</SelectItem>
-                        <SelectItem value="AES-256-CBC">AES-256-CBC</SelectItem>
-                        <SelectItem value="AES-128-CBC">AES-128-CBC</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <PendingSelect section="OpenVPN 加密" field="加密演算法" defaultValue={serverConfig.cipher}>
+                      <PendingSelectContent>
+                        <PendingSelectItem value="AES-256-GCM">AES-256-GCM</PendingSelectItem>
+                        <PendingSelectItem value="AES-128-GCM">AES-128-GCM</PendingSelectItem>
+                        <PendingSelectItem value="AES-256-CBC">AES-256-CBC</PendingSelectItem>
+                        <PendingSelectItem value="AES-128-CBC">AES-128-CBC</PendingSelectItem>
+                      </PendingSelectContent>
+                    </PendingSelect>
                   </div>
                   <div className="space-y-2">
                     <Label>驗證演算法</Label>
-                    <Select value={serverConfig.auth} onValueChange={(v) => setServerConfig({...serverConfig, auth: v})}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="SHA256">SHA-256</SelectItem>
-                        <SelectItem value="SHA384">SHA-384</SelectItem>
-                        <SelectItem value="SHA512">SHA-512</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <PendingSelect section="OpenVPN 加密" field="驗證演算法" defaultValue={serverConfig.auth}>
+                      <PendingSelectContent>
+                        <PendingSelectItem value="SHA256">SHA-256</PendingSelectItem>
+                        <PendingSelectItem value="SHA384">SHA-384</PendingSelectItem>
+                        <PendingSelectItem value="SHA512">SHA-512</PendingSelectItem>
+                      </PendingSelectContent>
+                    </PendingSelect>
                   </div>
                   <div className="space-y-2">
                     <Label>壓縮</Label>
-                    <Select value={serverConfig.compression} onValueChange={(v) => setServerConfig({...serverConfig, compression: v})}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="lz4-v2">LZ4-v2</SelectItem>
-                        <SelectItem value="lzo">LZO</SelectItem>
-                        <SelectItem value="none">無壓縮</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <PendingSelect section="OpenVPN 加密" field="壓縮" defaultValue={serverConfig.compression}>
+                      <PendingSelectContent>
+                        <PendingSelectItem value="lz4-v2">LZ4-v2</PendingSelectItem>
+                        <PendingSelectItem value="lzo">LZO</PendingSelectItem>
+                        <PendingSelectItem value="none">無壓縮</PendingSelectItem>
+                      </PendingSelectContent>
+                    </PendingSelect>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 mt-4">
-                  <Switch 
+                  <PendingSwitch 
+                    section="OpenVPN 加密" 
+                    field="TLS 驗證"
                     id="tls-auth"
-                    checked={serverConfig.tlsAuth}
-                    onCheckedChange={(checked) => setServerConfig({...serverConfig, tlsAuth: checked})}
+                    defaultChecked={serverConfig.tlsAuth}
                   />
                   <Label htmlFor="tls-auth">啟用 TLS 驗證 (tls-auth)</Label>
                 </div>
