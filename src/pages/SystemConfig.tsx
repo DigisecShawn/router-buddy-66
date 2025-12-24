@@ -1,8 +1,8 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { PendingInput } from "@/components/PendingInput";
+import { PendingSelect, SelectContent, SelectItem } from "@/components/PendingSelect";
 import { Settings } from "lucide-react";
 
 export default function SystemConfig() {
@@ -25,27 +25,33 @@ export default function SystemConfig() {
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="hostname">主機名稱</Label>
-              <Input id="hostname" placeholder="OpenWrt" />
+              <PendingInput 
+                section="系統設定" 
+                field="主機名稱" 
+                id="hostname" 
+                placeholder="OpenWrt" 
+              />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="timezone">時區</Label>
-              <Select defaultValue="asia-taipei">
-                <SelectTrigger id="timezone">
-                  <SelectValue />
-                </SelectTrigger>
+              <PendingSelect 
+                section="系統設定" 
+                field="時區" 
+                defaultValue="asia-taipei"
+                id="timezone"
+              >
                 <SelectContent>
                   <SelectItem value="asia-taipei">Asia/Taipei (UTC+8)</SelectItem>
                   <SelectItem value="utc">UTC</SelectItem>
                   <SelectItem value="asia-hong-kong">Asia/Hong Kong</SelectItem>
                   <SelectItem value="asia-shanghai">Asia/Shanghai</SelectItem>
                 </SelectContent>
-              </Select>
+              </PendingSelect>
             </div>
           </div>
 
           <div className="flex gap-2 pt-4">
-            <Button>儲存設定</Button>
             <Button variant="outline">重設</Button>
           </div>
         </CardContent>
@@ -59,21 +65,36 @@ export default function SystemConfig() {
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="current-password">當前密碼</Label>
-            <Input id="current-password" type="password" />
+            <PendingInput 
+              section="管理員密碼" 
+              field="當前密碼" 
+              id="current-password" 
+              type="password" 
+            />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="new-password">新密碼</Label>
-            <Input id="new-password" type="password" />
+            <PendingInput 
+              section="管理員密碼" 
+              field="新密碼" 
+              id="new-password" 
+              type="password" 
+            />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="confirm-password">確認密碼</Label>
-            <Input id="confirm-password" type="password" />
+            <PendingInput 
+              section="管理員密碼" 
+              field="確認密碼" 
+              id="confirm-password" 
+              type="password" 
+            />
           </div>
 
           <div className="flex gap-2 pt-4">
-            <Button>變更密碼</Button>
+            <Button variant="outline">變更密碼</Button>
           </div>
         </CardContent>
       </Card>
@@ -86,11 +107,15 @@ export default function SystemConfig() {
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="ntp-server">NTP 服務器</Label>
-            <Input id="ntp-server" placeholder="pool.ntp.org" />
+            <PendingInput 
+              section="時間同步" 
+              field="NTP 服務器" 
+              id="ntp-server" 
+              placeholder="pool.ntp.org" 
+            />
           </div>
 
           <div className="flex gap-2 pt-4">
-            <Button>儲存設定</Button>
             <Button variant="outline">立即同步</Button>
           </div>
         </CardContent>
