@@ -1,9 +1,9 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { PendingInput } from "@/components/PendingInput";
+import { PendingSwitch } from "@/components/PendingSwitch";
+import { PendingSelect, SelectContent, SelectItem } from "@/components/PendingSelect";
 import { Badge } from "@/components/ui/badge";
 import { Smartphone, Signal, Activity } from "lucide-react";
 
@@ -63,27 +63,39 @@ export default function FourGRouting() {
                 <Label htmlFor="4g-enabled">啟用 4G 模組</Label>
                 <p className="text-sm text-muted-foreground">開啟或關閉 4G 連接功能</p>
               </div>
-              <Switch id="4g-enabled" defaultChecked />
+              <PendingSwitch 
+                section="4G 設定" 
+                field="啟用 4G 模組" 
+                id="4g-enabled" 
+                defaultChecked 
+              />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="modem-device">模組設備</Label>
-              <Select defaultValue="/dev/ttyUSB0">
-                <SelectTrigger id="modem-device">
-                  <SelectValue />
-                </SelectTrigger>
+              <PendingSelect 
+                section="4G 設定" 
+                field="模組設備" 
+                defaultValue="/dev/ttyUSB0"
+                id="modem-device"
+              >
                 <SelectContent>
                   <SelectItem value="/dev/ttyUSB0">/dev/ttyUSB0</SelectItem>
                   <SelectItem value="/dev/ttyUSB1">/dev/ttyUSB1</SelectItem>
                   <SelectItem value="/dev/ttyUSB2">/dev/ttyUSB2</SelectItem>
                   <SelectItem value="auto">自動偵測</SelectItem>
                 </SelectContent>
-              </Select>
+              </PendingSelect>
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="apn">APN (接入點名稱)</Label>
-              <Input id="apn" placeholder="internet" />
+              <PendingInput 
+                section="4G 設定" 
+                field="APN" 
+                id="apn" 
+                placeholder="internet" 
+              />
               <p className="text-xs text-muted-foreground">
                 請向您的運營商確認正確的 APN 設置
               </p>
@@ -91,7 +103,13 @@ export default function FourGRouting() {
 
             <div className="space-y-2">
               <Label htmlFor="pin-code">PIN 碼 (選填)</Label>
-              <Input id="pin-code" type="password" placeholder="1234" maxLength={8} />
+              <PendingInput 
+                section="4G 設定" 
+                field="PIN 碼" 
+                id="pin-code" 
+                type="password" 
+                placeholder="1234" 
+              />
               <p className="text-xs text-muted-foreground">
                 如果 SIM 卡啟用了 PIN 碼保護，請輸入
               </p>
@@ -102,30 +120,38 @@ export default function FourGRouting() {
                 <Label htmlFor="auto-pin-unlock">PIN 碼自動解鎖</Label>
                 <p className="text-sm text-muted-foreground">啟動時自動使用已儲存的 PIN 碼解鎖 SIM 卡</p>
               </div>
-              <Switch id="auto-pin-unlock" />
+              <PendingSwitch 
+                section="4G 設定" 
+                field="PIN 碼自動解鎖" 
+                id="auto-pin-unlock" 
+              />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="network-mode">網絡模式</Label>
-              <Select defaultValue="auto">
-                <SelectTrigger id="network-mode">
-                  <SelectValue />
-                </SelectTrigger>
+              <PendingSelect 
+                section="4G 設定" 
+                field="網絡模式" 
+                defaultValue="auto"
+                id="network-mode"
+              >
                 <SelectContent>
                   <SelectItem value="auto">自動 (4G/3G/2G)</SelectItem>
                   <SelectItem value="4g-only">僅 4G</SelectItem>
                   <SelectItem value="3g-only">僅 3G</SelectItem>
                   <SelectItem value="4g-3g">4G/3G</SelectItem>
                 </SelectContent>
-              </Select>
+              </PendingSelect>
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="connection-type">連接類型</Label>
-              <Select defaultValue="auto">
-                <SelectTrigger id="connection-type">
-                  <SelectValue />
-                </SelectTrigger>
+              <PendingSelect 
+                section="4G 設定" 
+                field="連接類型" 
+                defaultValue="auto"
+                id="connection-type"
+              >
                 <SelectContent>
                   <SelectItem value="auto">自動</SelectItem>
                   <SelectItem value="ppp">PPP</SelectItem>
@@ -133,12 +159,11 @@ export default function FourGRouting() {
                   <SelectItem value="qmi">QMI</SelectItem>
                   <SelectItem value="mbim">MBIM</SelectItem>
                 </SelectContent>
-              </Select>
+              </PendingSelect>
             </div>
           </div>
 
           <div className="flex gap-2 pt-4">
-            <Button>儲存設定</Button>
             <Button variant="outline">重新連接</Button>
             <Button variant="outline">斷開連接</Button>
           </div>
@@ -179,7 +204,13 @@ export default function FourGRouting() {
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="mtu">MTU 大小</Label>
-            <Input id="mtu" type="number" placeholder="1500" />
+            <PendingInput 
+              section="4G 進階設定" 
+              field="MTU 大小" 
+              id="mtu" 
+              type="number" 
+              placeholder="1500" 
+            />
           </div>
 
           <div className="flex items-center justify-between">
@@ -187,16 +218,22 @@ export default function FourGRouting() {
               <Label htmlFor="auto-reconnect">自動重連</Label>
               <p className="text-sm text-muted-foreground">連接中斷時自動重新連接</p>
             </div>
-            <Switch id="auto-reconnect" defaultChecked />
+            <PendingSwitch 
+              section="4G 進階設定" 
+              field="自動重連" 
+              id="auto-reconnect" 
+              defaultChecked 
+            />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="dial-number">撥號號碼</Label>
-            <Input id="dial-number" placeholder="*99#" />
-          </div>
-
-          <div className="flex gap-2 pt-4">
-            <Button>儲存進階設定</Button>
+            <PendingInput 
+              section="4G 進階設定" 
+              field="撥號號碼" 
+              id="dial-number" 
+              placeholder="*99#" 
+            />
           </div>
         </CardContent>
       </Card>
