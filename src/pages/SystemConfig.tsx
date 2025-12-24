@@ -115,6 +115,25 @@ export default function SystemConfig() {
             />
           </div>
 
+          <div className="space-y-2">
+            <Label htmlFor="sync-interval">自動校時間隔</Label>
+            <PendingSelect 
+              section="時間同步" 
+              field="自動校時間隔" 
+              defaultValue="daily"
+              id="sync-interval"
+            >
+              <SelectContent>
+                <SelectItem value="disabled">停用自動校時</SelectItem>
+                <SelectItem value="hourly">每小時</SelectItem>
+                <SelectItem value="6hours">每 6 小時</SelectItem>
+                <SelectItem value="12hours">每 12 小時</SelectItem>
+                <SelectItem value="daily">每天</SelectItem>
+                <SelectItem value="weekly">每週</SelectItem>
+              </SelectContent>
+            </PendingSelect>
+          </div>
+
           <div className="flex gap-2 pt-4">
             <Button variant="outline">立即同步</Button>
           </div>
