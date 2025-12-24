@@ -29,7 +29,7 @@ export default function SystemConfig() {
                 section="系統設定" 
                 field="主機名稱" 
                 id="hostname" 
-                placeholder="OpenWrt" 
+                placeholder="DIGISEC_4G_LTE" 
               />
             </div>
 
@@ -43,9 +43,27 @@ export default function SystemConfig() {
               >
                 <SelectContent>
                   <SelectItem value="asia-taipei">Asia/Taipei (UTC+8)</SelectItem>
-                  <SelectItem value="utc">UTC</SelectItem>
-                  <SelectItem value="asia-hong-kong">Asia/Hong Kong</SelectItem>
-                  <SelectItem value="asia-shanghai">Asia/Shanghai</SelectItem>
+                  <SelectItem value="asia-tokyo">Asia/Tokyo (UTC+9)</SelectItem>
+                  <SelectItem value="asia-seoul">Asia/Seoul (UTC+9)</SelectItem>
+                  <SelectItem value="asia-shanghai">Asia/Shanghai (UTC+8)</SelectItem>
+                  <SelectItem value="asia-hong-kong">Asia/Hong Kong (UTC+8)</SelectItem>
+                  <SelectItem value="asia-singapore">Asia/Singapore (UTC+8)</SelectItem>
+                  <SelectItem value="asia-bangkok">Asia/Bangkok (UTC+7)</SelectItem>
+                  <SelectItem value="asia-jakarta">Asia/Jakarta (UTC+7)</SelectItem>
+                  <SelectItem value="asia-kolkata">Asia/Kolkata (UTC+5:30)</SelectItem>
+                  <SelectItem value="asia-dubai">Asia/Dubai (UTC+4)</SelectItem>
+                  <SelectItem value="europe-london">Europe/London (UTC+0)</SelectItem>
+                  <SelectItem value="europe-paris">Europe/Paris (UTC+1)</SelectItem>
+                  <SelectItem value="europe-berlin">Europe/Berlin (UTC+1)</SelectItem>
+                  <SelectItem value="europe-moscow">Europe/Moscow (UTC+3)</SelectItem>
+                  <SelectItem value="america-new-york">America/New York (UTC-5)</SelectItem>
+                  <SelectItem value="america-chicago">America/Chicago (UTC-6)</SelectItem>
+                  <SelectItem value="america-denver">America/Denver (UTC-7)</SelectItem>
+                  <SelectItem value="america-los-angeles">America/Los Angeles (UTC-8)</SelectItem>
+                  <SelectItem value="america-sao-paulo">America/Sao Paulo (UTC-3)</SelectItem>
+                  <SelectItem value="australia-sydney">Australia/Sydney (UTC+10)</SelectItem>
+                  <SelectItem value="pacific-auckland">Pacific/Auckland (UTC+12)</SelectItem>
+                  <SelectItem value="utc">UTC (UTC+0)</SelectItem>
                 </SelectContent>
               </PendingSelect>
             </div>
