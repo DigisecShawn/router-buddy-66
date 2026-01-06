@@ -30,7 +30,7 @@ export function Layout({ children }: LayoutProps) {
             <SidebarTrigger className="mr-4" />
             <img src={logo} alt="DIGISEC" className="h-8 mr-4" />
             <div className="flex-1">
-              <h1 className="text-xl font-semibold text-foreground"></h1>
+              <h1 className="text-xl font-semibold text-foreground">SW-R1208v2</h1>
             </div>
             <div className="flex items-center gap-4">
               <PendingChangesPanel />
