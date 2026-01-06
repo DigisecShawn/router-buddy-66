@@ -83,7 +83,7 @@ const System = () => {
           <CardContent className="space-y-4">
             <div className="flex justify-between py-2 border-b border-border">
               <span className="text-sm text-muted-foreground">型號</span>
-              <span className="text-sm font-medium text-foreground">RT-AX86U Pro</span>
+              <span className="text-sm font-medium text-foreground">SW-R1208v2</span>
             </div>
             <div className="flex justify-between py-2 border-b border-border">
               <span className="text-sm text-muted-foreground">固件版本</span>
