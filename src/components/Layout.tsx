@@ -3,14 +3,13 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { PendingChangesPanel } from "@/components/PendingChangesPanel";
 import { ReactNode } from "react";
 import logo from "@/assets/logo.png";
-
 interface LayoutProps {
   children: ReactNode;
 }
-
-export function Layout({ children }: LayoutProps) {
-  return (
-    <SidebarProvider>
+export function Layout({
+  children
+}: LayoutProps) {
+  return <SidebarProvider>
       <div className="flex min-h-screen w-full bg-background">
         <AppSidebar />
         <div className="flex-1 flex flex-col">
@@ -18,7 +17,8 @@ export function Layout({ children }: LayoutProps) {
             <SidebarTrigger className="mr-4" />
             <img src={logo} alt="DIGISEC" className="h-8 mr-4" />
             <div className="flex-1">
-              <h1 className="text-xl font-semibold text-foreground">路由器管理系統</h1>
+              <h1 className="text-xl font-semibold text-foreground">
+            </h1>
             </div>
             <div className="flex items-center gap-4">
               <PendingChangesPanel />
@@ -31,6 +31,5 @@ export function Layout({ children }: LayoutProps) {
           <main className="flex-1 p-6">{children}</main>
         </div>
       </div>
-    </SidebarProvider>
-  );
+    </SidebarProvider>;
 }
